@@ -51,7 +51,7 @@ export default function AboutPage() {
       <JsonLd data={organizationJsonLd} />
 
       {/* Hero */}
-      <section className="relative h-[50vh] min-h-[400px] flex items-center justify-center">
+      <section className="relative h-[35vh] min-h-[280px] flex items-center justify-center">
         <div className="absolute inset-0">
           <Image
             src="https://pub-45c507c035214836bf31cb43c8f8946b.r2.dev/adi.jpg"
