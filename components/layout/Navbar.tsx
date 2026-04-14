@@ -138,29 +138,49 @@ export default function Navbar() {
           </button>
         </div>
 
-        {/* Mobile Menu */}
+        {/* Mobile Menu Overlay */}
+        {isMobileOpen && (
+          <div
+            className="lg:hidden fixed inset-0 bg-black/50 z-40"
+            onClick={() => setIsMobileOpen(false)}
+          />
+        )}
+
+        {/* Mobile Menu Panel */}
         <div
           className={cn(
-            "lg:hidden overflow-hidden transition-all duration-300",
-            isMobileOpen ? "max-h-screen pb-6" : "max-h-0"
+            "lg:hidden fixed top-0 right-0 h-full w-[280px] bg-white z-50 shadow-2xl transition-transform duration-300 ease-in-out",
+            isMobileOpen ? "translate-x-0" : "translate-x-full"
           )}
         >
-          <div className="flex flex-col gap-1 pt-2 border-t border-border">
+          <div className="flex items-center justify-between p-6 border-b border-gray-200">
+            <span className="text-lg font-playfair font-bold text-gray-900">Menu</span>
+            <button
+              onClick={() => setIsMobileOpen(false)}
+              className="p-2 text-gray-600 hover:text-gray-900"
+              aria-label="Close menu"
+            >
+              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+          <div className="flex flex-col p-6 overflow-y-auto h-[calc(100%-80px)]">
             {mainNavLinks.map((link) => (
               <div key={link.href}>
                 <Link
                   href={link.href}
                   className={cn(
-                    "block py-3 px-2 text-base font-dm transition-colors",
+                    "block py-3 text-base font-dm font-medium transition-colors border-b border-gray-100",
                     pathname === link.href
                       ? "text-accent"
-                      : "text-text-secondary hover:text-text-primary"
+                      : "text-gray-900 hover:text-accent"
                   )}
                 >
                   {link.label}
                 </Link>
                 {link.children && (
-                  <div className="pl-6">
+                  <div className="pl-4">
                     {link.children.map((child) => (
                       <Link
                         key={child.href}
@@ -169,7 +189,7 @@ export default function Navbar() {
                           "block py-2 text-sm font-dm transition-colors",
                           pathname === child.href
                             ? "text-accent"
-                            : "text-text-secondary hover:text-text-primary"
+                            : "text-gray-600 hover:text-accent"
                         )}
                       >
                         {child.label}
@@ -181,7 +201,7 @@ export default function Navbar() {
             ))}
             <Link
               href="/contact"
-              className="mt-4 mx-2 inline-flex items-center justify-center px-6 py-3 bg-accent hover:bg-accent-hover text-bg-primary font-dm font-medium text-sm tracking-wide rounded-btn transition-all"
+              className="mt-6 inline-flex items-center justify-center px-6 py-3 bg-accent hover:bg-accent-hover text-white font-dm font-medium text-sm tracking-wide rounded-btn transition-all"
             >
               Book Now
             </Link>

@@ -32,7 +32,7 @@ export function generatePageMetadata({
   const ogImage = image || DEFAULT_OG_IMAGE;
 
   return {
-    title: `${title} | ${SITE_NAME}`,
+    title,
     description,
     alternates: {
       canonical: url,
@@ -42,6 +42,7 @@ export function generatePageMetadata({
       description,
       url,
       siteName: SITE_NAME,
+      locale: "en_PK",
       images: [
         {
           url: ogImage,
