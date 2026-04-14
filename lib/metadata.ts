@@ -83,11 +83,11 @@ export function generateLocalBusinessJsonLd(overrides?: {
     description:
       "Professional photography and videography services in Peshawar, Pakistan. Specializing in weddings, corporate events, fashion, drone photography, and more.",
     url: SITE_URL,
-    telephone: "+92 XXX XXXXXXX",
+    telephone: "+92 333 9365272",
     email: "info@adiphotography.pk",
     address: {
       "@type": "PostalAddress",
-      streetAddress: "Peshawar",
+      streetAddress: "UG-411 Deans Trade Center",
       addressLocality: overrides?.city || "Peshawar",
       addressRegion: "Khyber Pakhtunkhwa",
       addressCountry: "PK",
@@ -101,9 +101,10 @@ export function generateLocalBusinessJsonLd(overrides?: {
     priceRange: "$$",
     openingHours: ["Mo-Sa 09:00-20:00"],
     sameAs: [
-      "https://instagram.com/adiphotography",
-      "https://facebook.com/adiphotography",
-      "https://youtube.com/@adiphotography",
+      "https://www.instagram.com/adi.photographyandfilms/",
+      "https://www.facebook.com/adiPhotograpyandFilms",
+      "https://www.youtube.com/channel/UCrSrPfmYnFhh0c-Pckt5RtQ",
+      "https://www.tiktok.com/@adi_photographyandfilms",
     ],
     areaServed: [
       { "@type": "City", name: "Peshawar" },

@@ -71,9 +71,9 @@ export const socialLinks = [
 ];
 
 export const contactInfo = {
-  phone: "+92 XXX XXXXXXX",
+  phone: "+92 333 9365272",
   email: "info@adiphotography.pk",
-  address: "Peshawar, Khyber Pakhtunkhwa, Pakistan",
+  address: "UG-411 Deans Trade Center, Peshawar",
   whatsapp: "https://wa.link/jly29r",
 };
 
