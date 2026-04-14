@@ -35,6 +35,7 @@ export default function Footer() {
                   className="w-10 h-10 rounded-full bg-bg-card border border-border flex items-center justify-center text-text-secondary hover:text-accent hover:border-accent transition-all duration-300"
                   aria-label={social.label}
                 >
+                  <span className="sr-only">Follow Adi Photography on {social.label}</span>
                   <SocialIcon name={social.icon} />
                 </a>
               ))}

@@ -13,7 +13,8 @@ export type PortfolioCategory =
   | "corporate"
   | "events"
   | "drone"
-  | "fashion";
+  | "fashion"
+  | "videography";
 
 export const portfolioCategories: {
   slug: PortfolioCategory;
@@ -61,6 +62,14 @@ export const portfolioCategories: {
     metaTitle: "Fashion Photography Portfolio | Adi Photography Peshawar",
     metaDescription:
       "Explore our fashion photography portfolio featuring lookbooks, campaigns, and editorial shoots in Peshawar by Adi Photography.",
+  },
+  {
+    slug: "videography",
+    label: "Videography",
+    h1: "Videography Portfolio | Peshawar, Pakistan",
+    metaTitle: "Videography Portfolio | Adi Photography Peshawar",
+    metaDescription:
+      "Watch our videography portfolio featuring cinematic wedding films, corporate videos, and commercial productions in Peshawar by Adi Photography.",
   },
 ];
 
@@ -267,6 +276,43 @@ export const portfolioItems: PortfolioItem[] = [
     alt: "Clothing collection fashion photography in Peshawar by Adi Photography",
     width: 800,
     height: 1200,
+  },
+  // Videography
+  {
+    id: "v1",
+    title: "Wedding Highlight Reel",
+    category: "videography",
+    src: "/images/portfolio/videography-peshawar-01.jpg",
+    alt: "Wedding videography highlight reel by Adi Photography Peshawar",
+    width: 1200,
+    height: 800,
+  },
+  {
+    id: "v2",
+    title: "Corporate Video Production",
+    category: "videography",
+    src: "/images/portfolio/videography-peshawar-02.jpg",
+    alt: "Corporate video production in Peshawar by Adi Photography",
+    width: 1200,
+    height: 800,
+  },
+  {
+    id: "v3",
+    title: "Cinematic Event Coverage",
+    category: "videography",
+    src: "/images/portfolio/videography-peshawar-03.jpg",
+    alt: "Cinematic event videography in Peshawar by Adi Photography",
+    width: 1200,
+    height: 800,
+  },
+  {
+    id: "v4",
+    title: "Commercial Video Shoot",
+    category: "videography",
+    src: "/images/portfolio/videography-peshawar-04.jpg",
+    alt: "Commercial video shoot in Peshawar by Adi Photography",
+    width: 1200,
+    height: 800,
   },
 ];
 

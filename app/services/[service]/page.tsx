@@ -31,12 +31,19 @@ export async function generateMetadata({
   const service = getServiceBySlug(params.service);
   if (!service) return {};
 
-  return generatePageMetadata({
+  const meta = generatePageMetadata({
     title: service.metaTitle.replace(" | Adi Photography Peshawar", ""),
     description: service.metaDescription,
     path: `/services/${service.slug}`,
     image: service.heroImage,
   });
+
+  // Add service-specific keywords if available
+  if (service.keywords) {
+    meta.keywords = service.keywords;
+  }
+
+  return meta;
 }
 
 export default function ServicePage({ params }: ServicePageProps) {
@@ -62,6 +69,8 @@ export default function ServicePage({ params }: ServicePageProps) {
           description: service.description,
           url: `/services/${service.slug}`,
           image: service.heroImage,
+          serviceType: service.serviceType,
+          offers: service.offers,
         })}
       />
       <JsonLd data={generateFaqJsonLd(service.faqs)} />
@@ -77,7 +86,7 @@ export default function ServicePage({ params }: ServicePageProps) {
             priority
             sizes="100vw"
           />
-          <div className="absolute inset-0 gradient-overlay" />
+          <div className="absolute inset-0 bg-black/60" />
         </div>
         <div className="relative z-10 text-center px-4">
           <h1 className="text-4xl md:text-5xl font-playfair font-bold text-text-primary mb-4">
@@ -108,8 +117,30 @@ export default function ServicePage({ params }: ServicePageProps) {
         </Container>
       </section>
 
+      {/* Expanded Content Sections (#9 thin content fix) */}
+      {service.expandedContent && service.expandedContent.length > 0 && (
+        <section className="py-20 bg-bg-secondary">
+          <Container>
+            <div className="max-w-3xl mx-auto space-y-12">
+              {service.expandedContent.map((section, index) => (
+                <ScrollReveal key={section.heading} delay={index * 0.1}>
+                  <div>
+                    <h2 className="text-2xl md:text-3xl font-playfair font-semibold text-text-primary mb-6">
+                      {section.heading}
+                    </h2>
+                    <p className="text-text-secondary font-dm text-base leading-relaxed">
+                      {section.body}
+                    </p>
+                  </div>
+                </ScrollReveal>
+              ))}
+            </div>
+          </Container>
+        </section>
+      )}
+
       {/* Deliverables */}
-      <section className="py-20 bg-bg-secondary">
+      <section className="py-20 bg-bg-primary">
         <Container>
           <ScrollReveal>
             <div className="w-12 h-0.5 bg-accent mx-auto mb-4" />
@@ -145,7 +176,7 @@ export default function ServicePage({ params }: ServicePageProps) {
       </section>
 
       {/* Process */}
-      <section className="py-20 bg-bg-primary">
+      <section className="py-20 bg-bg-secondary">
         <Container>
           <ScrollReveal>
             <div className="w-12 h-0.5 bg-accent mx-auto mb-4" />
@@ -177,7 +208,7 @@ export default function ServicePage({ params }: ServicePageProps) {
 
       {/* Portfolio Samples */}
       {portfolioSamples.length > 0 && (
-        <section className="py-20 bg-bg-secondary">
+        <section className="py-20 bg-bg-primary">
           <Container>
             <ScrollReveal>
               <div className="w-12 h-0.5 bg-accent mx-auto mb-4" />

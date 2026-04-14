@@ -8,6 +8,10 @@ export interface Service {
   heroImage: string;
   metaTitle: string;
   metaDescription: string;
+  keywords?: string[];
+  serviceType?: string;
+  offers?: string[];
+  expandedContent?: { heading: string; body: string }[];
   deliverables: string[];
   process: { step: string; title: string; description: string }[];
   faqs: { question: string; answer: string }[];
@@ -172,9 +176,36 @@ export const services: Service[] = [
     icon: "videography",
     heroImage: "/images/services/videography-hero.jpg",
     metaTitle:
-      "Professional Videography in Peshawar | Adi Photography Peshawar",
+      "Professional Videography Services in Peshawar",
     metaDescription:
       "Cinematic videography services in Peshawar. Wedding films, commercials, corporate videos & promotional content. Professional video production by Adi Photography.",
+    keywords: [
+      "videography Peshawar",
+      "video production Peshawar",
+      "wedding videography Peshawar",
+      "corporate video Peshawar",
+      "cinematic video production",
+      "Adi Photography videography",
+      "professional videographer Peshawar",
+      "commercial video production Pakistan",
+    ],
+    serviceType: "Videography",
+    offers: [
+      "Wedding Videography",
+      "Corporate Video Production",
+      "Commercial Video Production",
+      "Event Videography",
+    ],
+    expandedContent: [
+      {
+        heading: "Why Choose Adi Photography for Videography in Peshawar?",
+        body: "With over 8 years of experience in video production across Peshawar and Pakistan, Adi Photography has earned a reputation for delivering cinematic-quality videos that captivate audiences. Our videography team combines technical expertise with creative storytelling, using cinema-grade equipment including Sony FX6, Canon C70, professional gimbals, motorized sliders, and wireless audio systems. Every project receives the same level of dedication — whether it's a wedding highlight reel or a full commercial production for a national brand. What sets us apart is our end-to-end production capability. From initial concept development and storyboarding through to post-production color grading and sound design, we handle every stage in-house. This ensures consistency, quality control, and faster turnaround times compared to agencies that outsource their editing. Our clients across Peshawar, Islamabad, and Lahore trust us because we consistently deliver videos that exceed expectations.",
+      },
+      {
+        heading: "Types of Videography We Offer",
+        body: "Our videography services in Peshawar span a wide range of production types. For weddings, we create cinematic highlight reels (3-5 minutes) and full documentary edits (20-30 minutes) that preserve every precious moment of your celebration — from mehndi and baraat to nikah and valima. Our corporate video production covers brand films, company profiles, product demos, training videos, and executive interviews that strengthen your business identity. We also specialize in commercial video production for advertising campaigns, social media content, and promotional videos. Our drone-integrated videography adds breathtaking aerial perspectives to real estate tours, event coverage, and tourism projects. For musicians and artists, we produce music videos with creative direction and professional post-production. Whatever your video production needs in Peshawar, our team has the skills and equipment to bring your vision to life.",
+      },
+    ],
     deliverables: [
       "4K cinematic video capture",
       "Professional audio recording",
@@ -232,7 +263,7 @@ export const services: Service[] = [
           "Highlight reels are typically delivered within 2 weeks. Full documentary edits and commercial projects take 3-4 weeks depending on complexity.",
       },
     ],
-    portfolioCategory: "events",
+    portfolioCategory: "videography",
   },
   {
     slug: "drone-videography-peshawar",

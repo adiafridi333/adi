@@ -135,8 +135,10 @@ export function generateServiceJsonLd(service: {
   description: string;
   url: string;
   image: string;
+  serviceType?: string;
+  offers?: string[];
 }) {
-  return {
+  const jsonLd: Record<string, unknown> = {
     "@context": "https://schema.org",
     "@type": "Service",
     name: service.name,
@@ -145,6 +147,15 @@ export function generateServiceJsonLd(service: {
       "@type": "LocalBusiness",
       name: "Adi Photography",
       url: SITE_URL,
+      telephone: "+923339365272",
+      address: {
+        "@type": "PostalAddress",
+        streetAddress: "UG-411 Deans Trade Center",
+        addressLocality: "Peshawar",
+        addressRegion: "Khyber Pakhtunkhwa",
+        addressCountry: "PK",
+      },
+      priceRange: "$$",
     },
     url: `${SITE_URL}${service.url}`,
     image: `${SITE_URL}${service.image}`,
@@ -153,6 +164,26 @@ export function generateServiceJsonLd(service: {
       name: "Peshawar",
     },
   };
+
+  if (service.serviceType) {
+    jsonLd.serviceType = service.serviceType;
+  }
+
+  if (service.offers && service.offers.length > 0) {
+    jsonLd.hasOfferCatalog = {
+      "@type": "OfferCatalog",
+      name: `${service.serviceType || service.name} Services`,
+      itemListElement: service.offers.map((offer) => ({
+        "@type": "Offer",
+        itemOffered: {
+          "@type": "Service",
+          name: offer,
+        },
+      })),
+    };
+  }
+
+  return jsonLd;
 }
 
 export function generateFaqJsonLd(
