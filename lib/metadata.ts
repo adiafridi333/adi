@@ -3,7 +3,7 @@ import { Metadata } from "next";
 const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL || "https://www.adiphotography.pk";
 const SITE_NAME = "Adi Photography Peshawar";
-const DEFAULT_OG_IMAGE = `${SITE_URL}/images/og-default.jpg`;
+const DEFAULT_OG_IMAGE = "/images/og-default.jpg";
 
 interface PageMetadataOptions {
   title: string;
