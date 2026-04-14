@@ -38,7 +38,7 @@ export default function Navbar() {
           {/* Logo */}
           <Link
             href="/"
-            className="flex items-center"
+            className="flex items-center -ml-2"
             aria-label="Adi Photography Home"
           >
             <Image
