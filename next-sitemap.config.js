@@ -1,6 +1,6 @@
 /** @type {import('next-sitemap').IConfig} */
 module.exports = {
-  siteUrl: process.env.NEXT_PUBLIC_SITE_URL || 'https://adiphotography.pk',
+  siteUrl: process.env.NEXT_PUBLIC_SITE_URL || 'https://www.adiphotography.pk',
   generateRobotsTxt: true,
   generateIndexSitemap: true,
   changefreq: 'weekly',
@@ -8,7 +8,7 @@ module.exports = {
   sitemapSize: 7000,
   robotsTxtOptions: {
     additionalSitemaps: [
-      `${process.env.NEXT_PUBLIC_SITE_URL || 'https://adiphotography.pk'}/image-sitemap.xml`,
+      `${process.env.NEXT_PUBLIC_SITE_URL || 'https://www.adiphotography.pk'}/image-sitemap.xml`,
     ],
     policies: [
       {
