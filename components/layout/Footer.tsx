@@ -78,21 +78,7 @@ export default function Footer() {
                 </li>
               ))}
             </ul>
-            <h3 className="text-text-primary font-playfair font-semibold text-lg mb-4 mt-8">
-              Locations
-            </h3>
-            <ul className="space-y-3">
-              {footerLinks.locations.map((link) => (
-                <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    className="text-text-secondary text-sm font-dm hover:text-accent transition-colors"
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
+
           </div>
 
           {/* Contact */}
