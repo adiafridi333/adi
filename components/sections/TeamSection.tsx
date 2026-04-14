@@ -33,11 +33,8 @@ export default function TeamSection() {
                 <p className="text-accent font-dm text-sm mb-3">
                   {member.role}
                 </p>
-                <p className="text-text-secondary font-dm text-sm leading-relaxed max-w-sm mx-auto mb-2">
+                <p className="text-text-secondary font-dm text-sm leading-relaxed max-w-sm mx-auto">
                   {member.bio}
-                </p>
-                <p className="text-text-secondary font-dm text-xs uppercase tracking-wider">
-                  {member.yearsExperience}+ Years Experience
                 </p>
               </div>
             </ScrollReveal>
