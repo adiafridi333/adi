@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { footerLinks, socialLinks, contactInfo } from "@/data/navigation";
 
 export default function Footer() {
@@ -11,12 +12,13 @@ export default function Footer() {
           {/* Brand */}
           <div className="lg:col-span-1">
             <Link href="/" className="inline-block mb-4">
-              <span className="text-2xl font-playfair font-bold text-text-primary">
-                Adi
-              </span>
-              <span className="text-sm font-dm uppercase tracking-[0.3em] text-text-secondary ml-2">
-                Photography
-              </span>
+              <Image
+                src="/images/logo.png"
+                alt="Adi Photography & Films"
+                width={160}
+                height={56}
+                className="h-12 w-auto"
+              />
             </Link>
             <p className="text-text-secondary text-sm font-dm leading-relaxed mb-6">
               Premium photography and videography services in Peshawar, Pakistan.
