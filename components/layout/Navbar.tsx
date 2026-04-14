@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { mainNavLinks } from "@/data/navigation";
 import { cn } from "@/lib/utils";
@@ -37,15 +38,17 @@ export default function Navbar() {
           {/* Logo */}
           <Link
             href="/"
-            className="flex items-center gap-2 group"
+            className="flex items-center"
             aria-label="Adi Photography Home"
           >
-            <span className="text-2xl font-playfair font-bold text-text-primary group-hover:text-accent transition-colors">
-              Adi
-            </span>
-            <span className="text-sm font-dm uppercase tracking-[0.3em] text-text-secondary group-hover:text-accent transition-colors">
-              Photography
-            </span>
+            <Image
+              src="/images/logo.png"
+              alt="Adi Photography & Films"
+              width={140}
+              height={50}
+              className="h-10 w-auto"
+              priority
+            />
           </Link>
 
           {/* Desktop Navigation */}
