@@ -26,7 +26,7 @@ export default function Button({
   ariaLabel,
 }: ButtonProps) {
   const baseStyles =
-    "inline-flex items-center justify-center font-dm font-medium tracking-wide rounded-btn transition-all duration-300 whitespace-nowrap";
+    "inline-flex items-center justify-center font-dm font-medium tracking-wide rounded-btn transition-all duration-300 text-center min-h-[44px]";
 
   const variants = {
     primary: "bg-accent hover:bg-accent-hover text-bg-primary",

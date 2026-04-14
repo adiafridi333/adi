@@ -38,8 +38,9 @@ export default function FaqSection({
                   onClick={() =>
                     setOpenIndex(openIndex === index ? null : index)
                   }
-                  className="w-full flex items-center justify-between p-6 text-left"
+                  className="w-full flex items-center justify-between p-6 text-left min-h-[44px]"
                   aria-expanded={openIndex === index}
+                  aria-controls={`faq-panel-${index}`}
                 >
                   <h3 className="text-text-primary font-dm font-medium text-sm pr-4">
                     {faq.question}
@@ -62,12 +63,14 @@ export default function FaqSection({
                   </svg>
                 </button>
                 <div
+                  id={`faq-panel-${index}`}
+                  role="region"
                   className={cn(
                     "overflow-hidden transition-all duration-300",
                     openIndex === index ? "max-h-96" : "max-h-0"
                   )}
                 >
-                  <p className="px-6 pb-6 text-text-secondary font-dm text-sm leading-relaxed">
+                  <p className="px-6 pb-6 text-text-secondary font-dm text-sm sm:text-base leading-relaxed">
                     {faq.answer}
                   </p>
                 </div>

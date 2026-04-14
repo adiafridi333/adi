@@ -3,8 +3,8 @@ User-agent: *
 Allow: /
 
 # Host
-Host: https://adiphotography.pk
+Host: https://www.adiphotography.pk
 
 # Sitemaps
-Sitemap: https://adiphotography.pk/sitemap.xml
-Sitemap: https://adiphotography.pk/image-sitemap.xml
+Sitemap: https://www.adiphotography.pk/sitemap.xml
+Sitemap: https://www.adiphotography.pk/image-sitemap.xml

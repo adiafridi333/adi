@@ -76,8 +76,14 @@ export default function RootLayout({
         <link rel="preconnect" href="https://pub-45c507c035214836bf31cb43c8f8946b.r2.dev" />
       </head>
       <body className="antialiased bg-bg-primary text-text-primary font-dm">
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-accent focus:text-white focus:rounded-btn focus:text-sm focus:font-dm"
+        >
+          Skip to main content
+        </a>
         <Navbar />
-        <main>{children}</main>
+        <main id="main-content">{children}</main>
         <Footer />
       </body>
     </html>

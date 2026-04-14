@@ -33,7 +33,7 @@ export default function Navbar() {
           : "bg-transparent"
       )}
     >
-      <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" aria-label="Main navigation">
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
           <Link
@@ -113,7 +113,7 @@ export default function Navbar() {
           {/* Mobile Toggle */}
           <button
             onClick={() => setIsMobileOpen(!isMobileOpen)}
-            className="lg:hidden flex flex-col gap-1.5 p-2"
+            className="lg:hidden flex flex-col items-center justify-center gap-1.5 w-11 h-11"
             aria-label="Toggle menu"
             aria-expanded={isMobileOpen}
           >
@@ -149,7 +149,7 @@ export default function Navbar() {
         {/* Mobile Menu Panel */}
         <div
           className={cn(
-            "lg:hidden fixed top-0 right-0 h-full w-[280px] bg-white z-50 shadow-2xl transition-transform duration-300 ease-in-out",
+            "lg:hidden fixed top-0 right-0 h-full w-[280px] max-w-[85vw] bg-white z-50 shadow-2xl transition-transform duration-300 ease-in-out",
             isMobileOpen ? "translate-x-0" : "translate-x-full"
           )}
         >
@@ -157,7 +157,7 @@ export default function Navbar() {
             <span className="text-lg font-playfair font-bold text-gray-900">Menu</span>
             <button
               onClick={() => setIsMobileOpen(false)}
-              className="p-2 text-gray-600 hover:text-gray-900"
+              className="flex items-center justify-center w-11 h-11 text-gray-600 hover:text-gray-900"
               aria-label="Close menu"
             >
               <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -171,7 +171,7 @@ export default function Navbar() {
                 <Link
                   href={link.href}
                   className={cn(
-                    "block py-3 text-base font-dm font-medium transition-colors border-b border-gray-100",
+                    "block py-3 min-h-[44px] flex items-center text-base font-dm font-medium transition-colors border-b border-gray-100",
                     pathname === link.href
                       ? "text-accent"
                       : "text-gray-900 hover:text-accent"
