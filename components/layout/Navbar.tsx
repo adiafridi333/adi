@@ -42,11 +42,11 @@ export default function Navbar() {
             aria-label="Adi Photography Home"
           >
             <Image
-              src="/images/logo.png"
+              src="https://pub-45c507c035214836bf31cb43c8f8946b.r2.dev/adi%20photography%20white.png"
               alt="Adi Photography & Films"
-              width={140}
-              height={50}
-              className="h-10 w-auto"
+              width={180}
+              height={64}
+              className="h-14 w-auto"
               priority
             />
           </Link>

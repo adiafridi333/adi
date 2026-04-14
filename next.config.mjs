@@ -4,6 +4,12 @@ const nextConfig = {
     formats: ['image/webp'],
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'pub-45c507c035214836bf31cb43c8f8946b.r2.dev',
+      },
+    ],
   },
 };
 

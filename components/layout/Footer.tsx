@@ -13,11 +13,11 @@ export default function Footer() {
           <div className="lg:col-span-1">
             <Link href="/" className="inline-block mb-4">
               <Image
-                src="/images/logo.png"
+                src="https://pub-45c507c035214836bf31cb43c8f8946b.r2.dev/adi%20photography%20white.png"
                 alt="Adi Photography & Films"
-                width={160}
-                height={56}
-                className="h-12 w-auto"
+                width={200}
+                height={70}
+                className="h-16 w-auto"
               />
             </Link>
             <p className="text-text-secondary text-sm font-dm leading-relaxed mb-6">

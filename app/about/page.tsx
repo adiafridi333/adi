@@ -54,7 +54,7 @@ export default function AboutPage() {
       <section className="relative h-[50vh] min-h-[400px] flex items-center justify-center">
         <div className="absolute inset-0">
           <Image
-            src="/images/hero/about-hero.jpg"
+            src="https://pub-45c507c035214836bf31cb43c8f8946b.r2.dev/adi.jpg"
             alt="About Adi Photography - professional photography studio in Peshawar"
             fill
             className="object-cover"
@@ -115,7 +115,7 @@ export default function AboutPage() {
             <ScrollReveal delay={0.2}>
               <div className="relative aspect-[4/5] rounded-card overflow-hidden">
                 <Image
-                  src="/images/about/studio.jpg"
+                  src="https://pub-45c507c035214836bf31cb43c8f8946b.r2.dev/adi.jpg"
                   alt="Adi Photography studio in Peshawar, Pakistan"
                   fill
                   className="object-cover"
