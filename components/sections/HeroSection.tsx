@@ -36,7 +36,7 @@ export default function HeroSection({
           sizes="100vw"
           quality={85}
         />
-        <div className="absolute inset-0 gradient-overlay" />
+        <div className="absolute inset-0 bg-black/60" />
       </div>
 
       {/* Content */}

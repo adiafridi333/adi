@@ -39,7 +39,7 @@ export default function Home() {
       <HeroSection
         title="Photography & Videography Services in Peshawar, Pakistan"
         subtitle="Cinematic storytelling for weddings, corporate events, and commercial projects. Let us capture your most cherished moments with artistry and precision."
-        backgroundImage="/images/hero/home-hero.jpg"
+        backgroundImage="/images/hero/home-hero.webp"
         primaryCta={{ label: "View Portfolio", href: "/portfolio" }}
         secondaryCta={{ label: "Get a Quote", href: "/contact" }}
       />
