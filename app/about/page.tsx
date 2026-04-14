@@ -91,22 +91,23 @@ export default function AboutPage() {
                 </h2>
                 <div className="space-y-4 text-text-secondary font-dm text-base leading-relaxed">
                   <p>
-                    Founded in 2015, Adi Photography began with a simple passion: to capture
-                    life&apos;s most meaningful moments with cinematic beauty. Based in Peshawar,
-                    Pakistan, we&apos;ve grown from a solo photographer into a full-service creative
-                    studio serving clients across Pakistan.
+                    Are you in need of an adept photographer in Peshawar or any other city? We, at
+                    Adi Photography &amp; Films, are passionate about crafting visual narratives that
+                    engage and inspire your target audience. With a keen eye for elegance in
+                    complexity, we deliver outstanding photo and videography solutions.
                   </p>
                   <p>
-                    Our approach combines technical precision with artistic vision. Every project —
-                    whether a grand wedding celebration, a corporate brand shoot, or an intimate
-                    portrait session — receives our complete creative dedication and attention to
-                    detail.
+                    We incite action in your audience through compelling cinematography, based on
+                    practices aimed at generating results for you. Always eager to present our work
+                    with the highest degree of professionalism and honesty, we are recognized as
+                    one of the finest photographers in Peshawar.
                   </p>
                   <p>
-                    Over the years, we&apos;ve had the privilege of working with hundreds of clients,
-                    documenting their stories and helping brands establish powerful visual identities.
-                    Our work has taken us across Pakistan, from the bustling streets of Karachi to the
-                    majestic landscapes of northern Pakistan.
+                    Our mission, vision, and services are imbued with our core values of Impact,
+                    Beauty, Innovation, and Wholeness. We are driven by the desire to touch
+                    people&apos;s hearts through visuals that emotionally resonate with them. Our top
+                    videographers, available in Peshawar and other major cities across Pakistan, are
+                    ready to help you accomplish your goals.
                   </p>
                 </div>
               </div>
@@ -136,22 +137,22 @@ export default function AboutPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
               {
-                title: "Cinematic Quality",
+                title: "Professional Skills",
                 description:
-                  "We approach every shoot with a filmmaker's eye, creating images that tell compelling visual stories with depth and emotion.",
-                icon: "videography",
+                  "Always keen on delivering our work with utmost professionalism and sincerity. Every project reflects our dedication to excellence.",
+                icon: "quality",
               },
               {
-                title: "Client-First Approach",
+                title: "Perfect Equipment",
                 description:
-                  "Your vision drives our creativity. We listen, plan meticulously, and deliver results that exceed expectations every time.",
-                icon: "handshake",
-              },
-              {
-                title: "Technical Excellence",
-                description:
-                  "Using industry-leading equipment and post-production techniques, we deliver images and videos of the highest professional standard.",
+                  "Wide range of high-end equipment for all kinds of production requirements. Cinema-grade cameras, drones, lighting, and audio.",
                 icon: "camera",
+              },
+              {
+                title: "Creativity",
+                description:
+                  "Creativity flows through our team of passionate professionals. We craft visual narratives that engage and inspire your audience.",
+                icon: "videography",
               },
             ].map((value, index) => (
               <ScrollReveal key={value.title} delay={index * 0.1}>

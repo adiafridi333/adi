@@ -50,22 +50,22 @@ export const footerLinks = {
 export const socialLinks = [
   {
     label: "Instagram",
-    href: "https://instagram.com/adiphotography",
+    href: "https://www.instagram.com/adi.photographyandfilms/",
     icon: "instagram",
   },
   {
     label: "Facebook",
-    href: "https://facebook.com/adiphotography",
+    href: "https://www.facebook.com/adiPhotograpyandFilms",
     icon: "facebook",
   },
   {
     label: "YouTube",
-    href: "https://youtube.com/@adiphotography",
+    href: "https://www.youtube.com/channel/UCrSrPfmYnFhh0c-Pckt5RtQ",
     icon: "youtube",
   },
   {
     label: "TikTok",
-    href: "https://tiktok.com/@adiphotography",
+    href: "https://www.tiktok.com/@adi_photographyandfilms",
     icon: "tiktok",
   },
 ];
@@ -74,5 +74,6 @@ export const contactInfo = {
   phone: "+92 XXX XXXXXXX",
   email: "info@adiphotography.pk",
   address: "Peshawar, Khyber Pakhtunkhwa, Pakistan",
-  whatsapp: `https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "92XXXXXXXXXX"}?text=${encodeURIComponent("Hi, I found you on adiphotography.pk and want to enquire about your services.")}`,
+  whatsapp: "https://wa.link/jly29r",
 };
+

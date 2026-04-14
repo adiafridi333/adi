@@ -4,10 +4,10 @@ import CountUp from "@/components/ui/CountUp";
 import ScrollReveal from "@/components/ui/ScrollReveal";
 
 const stats = [
-  { value: 500, suffix: "+", label: "Clients Served" },
-  { value: 1200, suffix: "+", label: "Projects Completed" },
-  { value: 10, suffix: "+", label: "Years Experience" },
-  { value: 50, suffix: "+", label: "Awards Won" },
+  { value: 200, suffix: "+", label: "Happy Clients" },
+  { value: 500, suffix: "+", label: "Projects Completed" },
+  { value: 99, suffix: "%", label: "Client Satisfaction" },
+  { value: 8, suffix: "+", label: "Years Experience" },
 ];
 
 export default function StatsBar() {

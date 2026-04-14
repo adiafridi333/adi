@@ -37,8 +37,8 @@ export default function Home() {
       <JsonLd data={generateLocalBusinessJsonLd()} />
 
       <HeroSection
-        title="Photography & Videography Services in Peshawar, Pakistan"
-        subtitle="Cinematic storytelling for weddings, corporate events, and commercial projects. Let us capture your most cherished moments with artistry and precision."
+        title="Adi Photography & Films"
+        subtitle="Always eager to present our work with the highest degree of professionalism and honesty, we are recognized as one of the finest photographers in Peshawar."
         backgroundImage="/images/hero/home-hero.webp"
         primaryCta={{ label: "View Portfolio", href: "/portfolio" }}
         secondaryCta={{ label: "Get a Quote", href: "/contact" }}
