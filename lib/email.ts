@@ -1,6 +1,10 @@
 import { Resend } from "resend";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+function getResend() {
+  const key = process.env.RESEND_API_KEY;
+  if (!key) throw new Error("RESEND_API_KEY is not configured");
+  return new Resend(key);
+}
 
 interface ContactFormData {
   name: string;
@@ -16,7 +20,7 @@ export async function sendContactEmail(data: ContactFormData) {
   const contactEmail =
     process.env.CONTACT_EMAIL || "info@adiphotography.pk";
 
-  const { error } = await resend.emails.send({
+  const { error } = await getResend().emails.send({
     from: "Adi Photography Website <onboarding@resend.dev>",
     to: contactEmail,
     subject: `New Inquiry: ${data.service} — ${data.name}`,
