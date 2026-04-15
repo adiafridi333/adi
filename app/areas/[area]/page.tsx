@@ -6,13 +6,19 @@ import Breadcrumbs from "@/components/ui/Breadcrumbs";
 import ScrollReveal from "@/components/ui/ScrollReveal";
 import ServiceIcon from "@/components/ui/ServiceIcon";
 import CtaBanner from "@/components/sections/CtaBanner";
+import FaqSection from "@/components/sections/FaqSection";
 import JsonLd from "@/components/seo/JsonLd";
 import {
   generatePageMetadata,
   generateBreadcrumbJsonLd,
+  generateFaqJsonLd,
   generateLocalBusinessJsonLd,
 } from "@/lib/metadata";
-import { getAreaBySlug, getAllAreaSlugs } from "@/data/areas";
+import {
+  getAreaByNameOrAlias,
+  getAreaBySlug,
+  getAllAreaSlugs,
+} from "@/data/areas";
 import { services } from "@/data/services";
 
 interface AreaPageProps {
@@ -55,6 +61,7 @@ export default function AreaPage({ params }: AreaPageProps) {
           city: area.name,
         })}
       />
+      <JsonLd data={generateFaqJsonLd(area.faqs)} />
 
       <section className="pt-32 pb-12 bg-bg-primary">
         <Container>
@@ -78,6 +85,18 @@ export default function AreaPage({ params }: AreaPageProps) {
                 <p className="text-text-secondary font-dm text-base leading-relaxed">
                   {area.content}
                 </p>
+                <div className="mt-10 space-y-10">
+                  {area.seoSections.map((section) => (
+                    <section key={section.heading}>
+                      <h2 className="text-2xl md:text-3xl font-playfair font-semibold text-text-primary mb-4">
+                        {section.heading}
+                      </h2>
+                      <p className="text-text-secondary font-dm text-base leading-relaxed">
+                        {section.body}
+                      </p>
+                    </section>
+                  ))}
+                </div>
               </div>
             </ScrollReveal>
 
@@ -108,6 +127,23 @@ export default function AreaPage({ params }: AreaPageProps) {
                     </li>
                   ))}
                 </ul>
+                {area.aliases && area.aliases.length > 0 && (
+                  <div className="mt-6 pt-6 border-t border-border">
+                    <h3 className="text-text-primary font-dm text-sm font-medium mb-3">
+                      Also Searched As
+                    </h3>
+                    <div className="flex flex-wrap gap-2">
+                      {area.aliases.map((alias) => (
+                        <span
+                          key={alias}
+                          className="inline-flex items-center min-h-[36px] bg-bg-secondary border border-border rounded-card px-3 text-text-secondary font-dm text-xs"
+                        >
+                          {alias}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             </ScrollReveal>
           </div>
@@ -157,18 +193,39 @@ export default function AreaPage({ params }: AreaPageProps) {
               </h2>
             </ScrollReveal>
             <div className="flex flex-wrap gap-3">
-              {area.nearbyAreas.map((nearbyArea) => (
-                <span
-                  key={nearbyArea}
-                  className="inline-flex min-h-[44px] items-center bg-bg-card border border-border rounded-card px-4 text-text-secondary font-dm text-sm"
-                >
-                  {nearbyArea}
-                </span>
-              ))}
+              {area.nearbyAreas.map((nearbyArea) => {
+                const linkedArea = getAreaByNameOrAlias(nearbyArea);
+
+                if (linkedArea) {
+                  return (
+                    <Link
+                      key={nearbyArea}
+                      href={`/areas/${linkedArea.slug}`}
+                      className="inline-flex min-h-[44px] items-center bg-bg-card border border-border rounded-card px-4 text-text-secondary hover:text-accent hover:border-accent/50 font-dm text-sm transition-colors"
+                    >
+                      {nearbyArea}
+                    </Link>
+                  );
+                }
+
+                return (
+                  <span
+                    key={nearbyArea}
+                    className="inline-flex min-h-[44px] items-center bg-bg-card border border-border rounded-card px-4 text-text-secondary font-dm text-sm"
+                  >
+                    {nearbyArea}
+                  </span>
+                );
+              })}
             </div>
           </Container>
         </section>
       )}
+
+      <FaqSection
+        faqs={area.faqs}
+        title={`Photography FAQs for ${area.name}`}
+      />
 
       <CtaBanner
         title={`Book Photography Services in ${area.name}`}
