@@ -29,6 +29,8 @@ module.exports = {
       priority = 0.9;
     } else if (path.startsWith('/portfolio')) {
       priority = 0.8;
+    } else if (path === '/areas' || path.startsWith('/areas/')) {
+      priority = 0.8;
     } else if (path.startsWith('/blog/')) {
       priority = 0.7;
       changefreq = 'weekly';

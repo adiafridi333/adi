@@ -49,7 +49,7 @@ export default function PortfolioGrid({
             className={cn(
               "px-5 py-2 text-sm font-dm font-medium rounded-btn transition-all duration-300",
               activeFilter === "all"
-                ? "bg-accent text-bg-primary"
+                ? "bg-accent text-white"
                 : "bg-bg-card border border-border text-text-secondary hover:text-text-primary hover:border-accent/50"
             )}
           >
@@ -62,7 +62,7 @@ export default function PortfolioGrid({
               className={cn(
                 "px-5 py-2 text-sm font-dm font-medium rounded-btn transition-all duration-300",
                 activeFilter === cat.slug
-                  ? "bg-accent text-bg-primary"
+                  ? "bg-accent text-white"
                   : "bg-bg-card border border-border text-text-secondary hover:text-text-primary hover:border-accent/50"
               )}
             >

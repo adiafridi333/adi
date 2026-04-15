@@ -29,11 +29,11 @@ export default function Button({
     "inline-flex items-center justify-center font-dm font-medium tracking-wide rounded-btn transition-all duration-300 text-center min-h-[44px]";
 
   const variants = {
-    primary: "bg-accent hover:bg-accent-hover text-bg-primary",
+    primary: "bg-accent hover:bg-accent-hover text-white",
     secondary:
       "bg-bg-card hover:bg-bg-secondary text-text-primary border border-border hover:border-accent",
     outline:
-      "bg-transparent border border-accent text-accent hover:bg-accent hover:text-bg-primary",
+      "bg-transparent border border-accent text-accent hover:bg-accent hover:text-white",
   };
 
   const sizes = {

@@ -105,7 +105,7 @@ export default function Navbar() {
           {/* Book Now CTA */}
           <Link
             href="/contact"
-            className="hidden lg:inline-flex items-center px-6 py-2.5 bg-accent hover:bg-accent-hover text-bg-primary font-dm font-medium text-sm tracking-wide rounded-btn transition-all duration-300"
+            className="hidden lg:inline-flex items-center px-6 py-2.5 bg-accent hover:bg-accent-hover text-white font-dm font-medium text-sm tracking-wide rounded-btn transition-all duration-300"
           >
             Book Now
           </Link>

@@ -3,7 +3,6 @@ import { notFound } from "next/navigation";
 import Image from "next/image";
 import Container from "@/components/layout/Container";
 import Breadcrumbs from "@/components/ui/Breadcrumbs";
-import Button from "@/components/ui/Button";
 import ScrollReveal from "@/components/ui/ScrollReveal";
 import FaqSection from "@/components/sections/FaqSection";
 import CtaBanner from "@/components/sections/CtaBanner";
@@ -15,7 +14,6 @@ import {
   generateFaqJsonLd,
 } from "@/lib/metadata";
 import { getServiceBySlug, getAllServiceSlugs } from "@/data/services";
-import { getPortfolioByCategory, type PortfolioCategory } from "@/data/portfolio";
 
 interface ServicePageProps {
   params: { service: string };
@@ -49,10 +47,6 @@ export async function generateMetadata({
 export default function ServicePage({ params }: ServicePageProps) {
   const service = getServiceBySlug(params.service);
   if (!service) notFound();
-
-  const portfolioSamples = getPortfolioByCategory(
-    service.portfolioCategory as PortfolioCategory
-  ).slice(0, 6);
 
   const breadcrumbs = [
     { name: "Home", url: "/" },
@@ -205,43 +199,6 @@ export default function ServicePage({ params }: ServicePageProps) {
           </div>
         </Container>
       </section>
-
-      {/* Portfolio Samples */}
-      {portfolioSamples.length > 0 && (
-        <section className="py-20 bg-bg-primary">
-          <Container>
-            <ScrollReveal>
-              <div className="w-12 h-0.5 bg-accent mx-auto mb-4" />
-              <h2 className="text-3xl font-playfair font-semibold text-text-primary text-center mb-12">
-                Portfolio Samples
-              </h2>
-            </ScrollReveal>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {portfolioSamples.map((item, index) => (
-                <ScrollReveal key={item.id} delay={index * 0.08}>
-                  <div className="relative aspect-[4/3] overflow-hidden rounded-card">
-                    <Image
-                      src={item.src}
-                      alt={item.alt}
-                      fill
-                      className="object-cover"
-                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                    />
-                  </div>
-                </ScrollReveal>
-              ))}
-            </div>
-            <div className="text-center mt-8">
-              <Button
-                href={`/portfolio/${service.portfolioCategory}`}
-                variant="outline"
-              >
-                View Full {service.title} Portfolio
-              </Button>
-            </div>
-          </Container>
-        </section>
-      )}
 
       {/* FAQ */}
       <FaqSection faqs={service.faqs} />

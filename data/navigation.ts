@@ -20,6 +20,7 @@ export const mainNavLinks: NavLink[] = [
     ],
   },
   { label: "Portfolio", href: "/portfolio" },
+  { label: "Areas", href: "/areas" },
   { label: "Blog", href: "/blog" },
   { label: "Contact", href: "/contact" },
 ];
@@ -36,6 +37,7 @@ export const footerLinks = {
   company: [
     { label: "About Us", href: "/about" },
     { label: "Portfolio", href: "/portfolio" },
+    { label: "Areas", href: "/areas" },
     { label: "Blog", href: "/blog" },
     { label: "Contact", href: "/contact" },
   ],
@@ -76,4 +78,3 @@ export const contactInfo = {
   address: "UG-411 Deans Trade Center, Peshawar",
   whatsapp: "https://wa.link/jly29r",
 };
-
