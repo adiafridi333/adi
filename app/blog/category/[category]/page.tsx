@@ -8,7 +8,7 @@ import { generatePageMetadata, generateBreadcrumbJsonLd } from "@/lib/metadata";
 import { getPostsByCategory, getAllCategories } from "@/lib/blog";
 
 interface BlogCategoryPageProps {
-  params: { category: string };
+  params: Promise<{ category: string }>;
 }
 
 const categoryMeta: Record<string, { title: string; description: string }> = {
@@ -46,19 +46,21 @@ export async function generateStaticParams() {
 export async function generateMetadata({
   params,
 }: BlogCategoryPageProps): Promise<Metadata> {
-  const meta = categoryMeta[params.category];
+  const { category } = await params;
+  const meta = categoryMeta[category];
   if (!meta) return {};
 
   return generatePageMetadata({
     title: meta.title,
     description: meta.description,
-    path: `/blog/category/${params.category}`,
+    path: `/blog/category/${category}`,
   });
 }
 
-export default function BlogCategoryPage({ params }: BlogCategoryPageProps) {
-  const posts = getPostsByCategory(params.category);
-  const meta = categoryMeta[params.category];
+export default async function BlogCategoryPage({ params }: BlogCategoryPageProps) {
+  const { category } = await params;
+  const posts = getPostsByCategory(category);
+  const meta = categoryMeta[category];
 
   if (!meta && posts.length === 0) notFound();
 
@@ -66,8 +68,8 @@ export default function BlogCategoryPage({ params }: BlogCategoryPageProps) {
     { name: "Home", url: "/" },
     { name: "Blog", url: "/blog" },
     {
-      name: params.category.charAt(0).toUpperCase() + params.category.slice(1),
-      url: `/blog/category/${params.category}`,
+      name: category.charAt(0).toUpperCase() + category.slice(1),
+      url: `/blog/category/${category}`,
     },
   ];
 
@@ -81,7 +83,7 @@ export default function BlogCategoryPage({ params }: BlogCategoryPageProps) {
             items={breadcrumbs.map((b) => ({ label: b.name, href: b.url }))}
           />
           <h1 className="text-4xl md:text-5xl font-playfair font-bold text-text-primary mt-4 mb-4">
-            {meta?.title || `${params.category.charAt(0).toUpperCase() + params.category.slice(1)} Articles`}
+            {meta?.title || `${category.charAt(0).toUpperCase() + category.slice(1)} Articles`}
           </h1>
           {meta?.description && (
             <p className="text-text-secondary font-dm text-lg max-w-2xl">

@@ -15,7 +15,7 @@ import {
 } from "@/data/portfolio";
 
 interface PortfolioCategoryPageProps {
-  params: { category: string };
+  params: Promise<{ category: string }>;
 }
 
 export async function generateStaticParams() {
@@ -25,7 +25,8 @@ export async function generateStaticParams() {
 export async function generateMetadata({
   params,
 }: PortfolioCategoryPageProps): Promise<Metadata> {
-  const category = getPortfolioCategoryData(params.category);
+  const { category: categorySlug } = await params;
+  const category = getPortfolioCategoryData(categorySlug);
   if (!category) return {};
 
   return generatePageMetadata({
@@ -35,10 +36,11 @@ export async function generateMetadata({
   });
 }
 
-export default function PortfolioCategoryPage({
+export default async function PortfolioCategoryPage({
   params,
 }: PortfolioCategoryPageProps) {
-  const category = getPortfolioCategoryData(params.category);
+  const { category: categorySlug } = await params;
+  const category = getPortfolioCategoryData(categorySlug);
   if (!category) notFound();
 
   const breadcrumbs = [
@@ -65,7 +67,7 @@ export default function PortfolioCategoryPage({
       <section className="py-12 bg-bg-primary">
         <Container>
           <PortfolioGrid
-            category={params.category as PortfolioCategory}
+            category={categorySlug as PortfolioCategory}
             showFilters={false}
           />
         </Container>

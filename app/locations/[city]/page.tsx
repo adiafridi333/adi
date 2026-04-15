@@ -19,7 +19,7 @@ import { services } from "@/data/services";
 import ServiceIcon from "@/components/ui/ServiceIcon";
 
 interface LocationPageProps {
-  params: { city: string };
+  params: Promise<{ city: string }>;
 }
 
 export async function generateStaticParams() {
@@ -29,7 +29,8 @@ export async function generateStaticParams() {
 export async function generateMetadata({
   params,
 }: LocationPageProps): Promise<Metadata> {
-  const location = getLocationBySlug(params.city);
+  const { city } = await params;
+  const location = getLocationBySlug(city);
   if (!location) return {};
 
   return generatePageMetadata({
@@ -39,8 +40,9 @@ export async function generateMetadata({
   });
 }
 
-export default function LocationPage({ params }: LocationPageProps) {
-  const location = getLocationBySlug(params.city);
+export default async function LocationPage({ params }: LocationPageProps) {
+  const { city } = await params;
+  const location = getLocationBySlug(city);
   if (!location) notFound();
 
   const breadcrumbs = [

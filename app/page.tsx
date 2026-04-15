@@ -38,7 +38,7 @@ export default function Home() {
       <HeroSection
         title="Adi Photography & Films"
         subtitle="Always eager to present our work with the highest degree of professionalism and honesty, we are recognized as one of the finest photographers in Peshawar."
-        backgroundImage="/images/hero/home-hero.webp"
+        backgroundImage="https://pub-45c507c035214836bf31cb43c8f8946b.r2.dev/IMG_3721%20website.webp"
         primaryCta={{ label: "View Portfolio", href: "/portfolio" }}
         secondaryCta={{ label: "Get a Quote", href: "/contact" }}
       />

@@ -9,7 +9,7 @@ import React from "react";
 const components = {
   img: (props: React.ImgHTMLAttributes<HTMLImageElement>) => (
     <Image
-      src={props.src || ""}
+      src={(props.src as string) || ""}
       alt={props.alt || "Blog image by Adi Photography Peshawar"}
       width={800}
       height={450}

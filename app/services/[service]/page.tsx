@@ -16,7 +16,7 @@ import {
 import { getServiceBySlug, getAllServiceSlugs } from "@/data/services";
 
 interface ServicePageProps {
-  params: { service: string };
+  params: Promise<{ service: string }>;
 }
 
 export async function generateStaticParams() {
@@ -26,7 +26,8 @@ export async function generateStaticParams() {
 export async function generateMetadata({
   params,
 }: ServicePageProps): Promise<Metadata> {
-  const service = getServiceBySlug(params.service);
+  const { service: serviceSlug } = await params;
+  const service = getServiceBySlug(serviceSlug);
   if (!service) return {};
 
   const meta = generatePageMetadata({
@@ -44,8 +45,9 @@ export async function generateMetadata({
   return meta;
 }
 
-export default function ServicePage({ params }: ServicePageProps) {
-  const service = getServiceBySlug(params.service);
+export default async function ServicePage({ params }: ServicePageProps) {
+  const { service: serviceSlug } = await params;
+  const service = getServiceBySlug(serviceSlug);
   if (!service) notFound();
 
   const breadcrumbs = [

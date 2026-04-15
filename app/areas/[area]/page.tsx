@@ -22,7 +22,7 @@ import {
 import { services } from "@/data/services";
 
 interface AreaPageProps {
-  params: { area: string };
+  params: Promise<{ area: string }>;
 }
 
 export async function generateStaticParams() {
@@ -32,7 +32,8 @@ export async function generateStaticParams() {
 export async function generateMetadata({
   params,
 }: AreaPageProps): Promise<Metadata> {
-  const area = getAreaBySlug(params.area);
+  const { area: areaSlug } = await params;
+  const area = getAreaBySlug(areaSlug);
   if (!area) return {};
 
   return generatePageMetadata({
@@ -42,8 +43,9 @@ export async function generateMetadata({
   });
 }
 
-export default function AreaPage({ params }: AreaPageProps) {
-  const area = getAreaBySlug(params.area);
+export default async function AreaPage({ params }: AreaPageProps) {
+  const { area: areaSlug } = await params;
+  const area = getAreaBySlug(areaSlug);
   if (!area) notFound();
 
   const breadcrumbs = [

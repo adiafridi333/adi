@@ -16,7 +16,7 @@ import { formatDate } from "@/lib/utils";
 import React from "react";
 
 interface BlogPostPageProps {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }
 
 export async function generateStaticParams() {
@@ -27,7 +27,8 @@ export async function generateStaticParams() {
 export async function generateMetadata({
   params,
 }: BlogPostPageProps): Promise<Metadata> {
-  const post = getPostBySlug(params.slug);
+  const { slug } = await params;
+  const post = getPostBySlug(slug);
   if (!post) return {};
 
   return generatePageMetadata({
@@ -45,7 +46,7 @@ export async function generateMetadata({
 const mdxComponents = {
   img: (props: React.ImgHTMLAttributes<HTMLImageElement>) => (
     <Image
-      src={props.src || ""}
+      src={(props.src as string) || ""}
       alt={props.alt || "Blog image by Adi Photography Peshawar"}
       width={800}
       height={450}
@@ -55,8 +56,9 @@ const mdxComponents = {
   ),
 };
 
-export default function BlogPostPage({ params }: BlogPostPageProps) {
-  const post = getPostBySlug(params.slug);
+export default async function BlogPostPage({ params }: BlogPostPageProps) {
+  const { slug } = await params;
+  const post = getPostBySlug(slug);
   if (!post) notFound();
 
   const relatedPosts = getRelatedPosts(post.slug, post.category);
