@@ -6,9 +6,7 @@ import JsonLd from "@/components/seo/JsonLd";
 import {
   generatePageMetadata,
   generateBreadcrumbJsonLd,
-  generateImageGalleryJsonLd,
 } from "@/lib/metadata";
-import { portfolioItems } from "@/data/portfolio";
 
 export const metadata: Metadata = generatePageMetadata({
   title: "Photography Portfolio",
@@ -23,18 +21,9 @@ export default function PortfolioPage() {
     { name: "Portfolio", url: "/portfolio" },
   ];
 
-  const galleryJsonLd = generateImageGalleryJsonLd(
-    portfolioItems.map((item) => ({
-      src: item.src,
-      title: item.title,
-      caption: item.alt,
-    }))
-  );
-
   return (
     <>
       <JsonLd data={generateBreadcrumbJsonLd(breadcrumbs)} />
-      <JsonLd data={galleryJsonLd} />
 
       <section className="pt-32 pb-12 bg-bg-primary">
         <Container>

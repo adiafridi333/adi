@@ -7,11 +7,9 @@ import JsonLd from "@/components/seo/JsonLd";
 import {
   generatePageMetadata,
   generateBreadcrumbJsonLd,
-  generateImageGalleryJsonLd,
 } from "@/lib/metadata";
 import {
   getPortfolioCategoryData,
-  getPortfolioByCategory,
   getAllPortfolioCategories,
   type PortfolioCategory,
 } from "@/data/portfolio";
@@ -43,26 +41,15 @@ export default function PortfolioCategoryPage({
   const category = getPortfolioCategoryData(params.category);
   if (!category) notFound();
 
-  const items = getPortfolioByCategory(params.category as PortfolioCategory);
-
   const breadcrumbs = [
     { name: "Home", url: "/" },
     { name: "Portfolio", url: "/portfolio" },
     { name: category.label, url: `/portfolio/${category.slug}` },
   ];
 
-  const galleryJsonLd = generateImageGalleryJsonLd(
-    items.map((item) => ({
-      src: item.src,
-      title: item.title,
-      caption: item.alt,
-    }))
-  );
-
   return (
     <>
       <JsonLd data={generateBreadcrumbJsonLd(breadcrumbs)} />
-      <JsonLd data={galleryJsonLd} />
 
       <section className="pt-32 pb-12 bg-bg-primary">
         <Container>
