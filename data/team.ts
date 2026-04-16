@@ -53,7 +53,7 @@ export const team: TeamMember[] = [
   {
     name: "Abbas Khan",
     role: "Videographer",
-    image: `${R2}/Abbas-Khan.png`,
+    image: "https://pub-971a12e433134135b6dce1159d9d07e0.r2.dev/Adi/WhatsApp%20Image%202026-04-16%20at%2008.13.31.jpeg",
     bio: "Professional videographer specializing in cinematic event coverage and storytelling.",
   },
   {
