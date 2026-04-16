@@ -142,7 +142,15 @@ export default function Footer() {
             © {currentYear} Adi Photography. All rights reserved.
           </p>
           <p className="text-text-secondary text-xs font-dm">
-            Professional Photography & Videography in Peshawar, Pakistan
+            Developed with <span className="text-red-500">❤️</span> by{" "}
+            <a
+              href="https://webspires.com.pk?utm_source=adi"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-bold text-text-primary hover:text-accent transition-colors"
+            >
+              Webspires
+            </a>
           </p>
         </div>
       </div>
