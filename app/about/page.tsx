@@ -113,7 +113,7 @@ export default function AboutPage() {
               </div>
             </ScrollReveal>
             <ScrollReveal delay={0.2}>
-              <div className="relative aspect-[4/5] rounded-card overflow-hidden">
+              <div className="relative aspect-[4/3] rounded-card overflow-hidden">
                 <Image
                   src="https://pub-45c507c035214836bf31cb43c8f8946b.r2.dev/adi.jpg"
                   alt="Adi Photography studio in Peshawar, Pakistan"
