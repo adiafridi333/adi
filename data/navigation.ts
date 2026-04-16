@@ -73,8 +73,8 @@ export const socialLinks = [
 ];
 
 export const contactInfo = {
-  phone: "+92 333 9365272",
+  phone: "+92 311 9512112",
   email: "info@adiphotography.pk",
   address: "UG-411 Deans Trade Center, Peshawar",
-  whatsapp: "https://wa.link/jly29r",
+  whatsapp: "https://wa.me/923119512112",
 };
