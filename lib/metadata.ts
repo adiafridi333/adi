@@ -88,7 +88,7 @@ export function generateLocalBusinessJsonLd(overrides?: {
     email: "info@adiphotography.pk",
     address: {
       "@type": "PostalAddress",
-      streetAddress: "UG-411 Deans Trade Center",
+      streetAddress: "UG-453 Deans Trade Center",
       addressLocality: overrides?.city || "Peshawar",
       addressRegion: "Khyber Pakhtunkhwa",
       addressCountry: "PK",
@@ -151,7 +151,7 @@ export function generateServiceJsonLd(service: {
       telephone: "+923339365272",
       address: {
         "@type": "PostalAddress",
-        streetAddress: "UG-411 Deans Trade Center",
+        streetAddress: "UG-453 Deans Trade Center",
         addressLocality: "Peshawar",
         addressRegion: "Khyber Pakhtunkhwa",
         addressCountry: "PK",
