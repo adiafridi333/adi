@@ -2,6 +2,8 @@ import type { Metadata, Viewport } from "next";
 import { Playfair_Display, DM_Sans } from "next/font/google";
 import "./globals.css";
 import SiteChrome from "@/components/layout/SiteChrome";
+import JsonLd from "@/components/seo/JsonLd";
+import { generateOrganizationJsonLd, generateWebSiteJsonLd } from "@/lib/metadata";
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -81,6 +83,8 @@ export default function RootLayout({
         >
           Skip to main content
         </a>
+        <JsonLd data={generateOrganizationJsonLd()} />
+        <JsonLd data={generateWebSiteJsonLd()} />
         <SiteChrome>{children}</SiteChrome>
       </body>
     </html>

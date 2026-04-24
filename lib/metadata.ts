@@ -78,19 +78,29 @@ export function generateLocalBusinessJsonLd(overrides?: {
 }) {
   return {
     "@context": "https://schema.org",
-    "@type": "LocalBusiness",
+    "@type": ["LocalBusiness", "ProfessionalService", "PhotographAction"],
     "@id": `${SITE_URL}/#business`,
-    name: overrides?.name || "Adi Photography",
+    name: overrides?.name || "Adi Photography & Films",
+    alternateName: ["Adi Photography", "Adi Photography Peshawar"],
     description:
-      "Professional photography and videography services in Peshawar, Pakistan. Specializing in weddings, corporate events, fashion, drone photography, and more.",
+      "Professional photography and videography studio in Peshawar, Pakistan. Specialising in weddings, corporate events, music events, fashion editorials, and licensed drone aerial work. Serving Peshawar, Islamabad, Lahore, Karachi, and across Khyber Pakhtunkhwa since 2014.",
+    slogan:
+      "Crafting visual narratives that engage and inspire — Peshawar's trusted photography studio.",
     url: SITE_URL,
-    telephone: "+92 333 9365272",
+    telephone: "+923339365272",
     email: "info@adiphotography.pk",
+    foundingDate: "2014",
+    founder: {
+      "@type": "Person",
+      name: "Adnan Afridi",
+      jobTitle: "Founder, Lead Photographer & Drone Operator",
+    },
     address: {
       "@type": "PostalAddress",
       streetAddress: "UG-453 Deans Trade Center",
       addressLocality: overrides?.city || "Peshawar",
       addressRegion: "Khyber Pakhtunkhwa",
+      postalCode: "25000",
       addressCountry: "PK",
     },
     geo: {
@@ -98,9 +108,40 @@ export function generateLocalBusinessJsonLd(overrides?: {
       latitude: overrides?.latitude || 34.0151,
       longitude: overrides?.longitude || 71.5249,
     },
+    hasMap:
+      "https://www.google.com/maps/search/?api=1&query=Adi+Photography+Deans+Trade+Center+Peshawar",
     image: `${SITE_URL}/images/og-default.jpg`,
+    logo: `${SITE_URL}/images/logo.png`,
     priceRange: "$$",
-    openingHours: ["Mo-Sa 09:00-20:00"],
+    paymentAccepted: ["Cash", "Bank Transfer", "EasyPaisa", "JazzCash"],
+    currenciesAccepted: "PKR",
+    knowsLanguage: ["en", "ur", "ps"],
+    knowsAbout: [
+      "Wedding Photography",
+      "Corporate Photography",
+      "Event Photography",
+      "Music Event Photography",
+      "Fashion Photography",
+      "Drone Aerial Photography",
+      "Cinematic Videography",
+      "Commercial Video Production",
+      "Photo Editing & Color Grading",
+    ],
+    openingHoursSpecification: [
+      {
+        "@type": "OpeningHoursSpecification",
+        dayOfWeek: [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+        ],
+        opens: "09:00",
+        closes: "20:00",
+      },
+    ],
     sameAs: [
       "https://www.instagram.com/adi.photographyandfilms/",
       "https://www.facebook.com/adiPhotograpyandFilms",
@@ -112,7 +153,112 @@ export function generateLocalBusinessJsonLd(overrides?: {
       { "@type": "City", name: "Islamabad" },
       { "@type": "City", name: "Lahore" },
       { "@type": "City", name: "Karachi" },
+      { "@type": "AdministrativeArea", name: "Khyber Pakhtunkhwa" },
+      { "@type": "Country", name: "Pakistan" },
     ],
+    serviceType: [
+      "Wedding Photography",
+      "Corporate Photography",
+      "Event Photography",
+      "Fashion Photography",
+      "Drone Videography",
+      "Cinematic Videography",
+    ],
+    hasOfferCatalog: {
+      "@type": "OfferCatalog",
+      name: "Adi Photography Services",
+      itemListElement: [
+        {
+          "@type": "Offer",
+          itemOffered: {
+            "@type": "Service",
+            name: "Wedding Photography",
+            url: `${SITE_URL}/services/wedding-photography-peshawar`,
+          },
+        },
+        {
+          "@type": "Offer",
+          itemOffered: {
+            "@type": "Service",
+            name: "Corporate Photography",
+            url: `${SITE_URL}/services/corporate-photography-peshawar`,
+          },
+        },
+        {
+          "@type": "Offer",
+          itemOffered: {
+            "@type": "Service",
+            name: "Videography",
+            url: `${SITE_URL}/services/videography-peshawar`,
+          },
+        },
+        {
+          "@type": "Offer",
+          itemOffered: {
+            "@type": "Service",
+            name: "Drone Videography",
+            url: `${SITE_URL}/services/drone-videography-peshawar`,
+          },
+        },
+      ],
+    },
+  };
+}
+
+export function generateOrganizationJsonLd() {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "@id": `${SITE_URL}/#organization`,
+    name: "Adi Photography & Films",
+    legalName: "Adi Photography & Films",
+    url: SITE_URL,
+    logo: {
+      "@type": "ImageObject",
+      url: `${SITE_URL}/images/logo.png`,
+      width: 512,
+      height: 512,
+    },
+    foundingDate: "2014",
+    founders: [{ "@type": "Person", name: "Adnan Afridi" }],
+    description:
+      "Photography and videography studio based in Peshawar, Pakistan, producing wedding, corporate, music event, fashion and aerial work.",
+    sameAs: [
+      "https://www.instagram.com/adi.photographyandfilms/",
+      "https://www.facebook.com/adiPhotograpyandFilms",
+      "https://www.youtube.com/channel/UCrSrPfmYnFhh0c-Pckt5RtQ",
+      "https://www.tiktok.com/@adi_photographyandfilms",
+    ],
+    contactPoint: [
+      {
+        "@type": "ContactPoint",
+        telephone: "+923339365272",
+        contactType: "customer service",
+        email: "info@adiphotography.pk",
+        areaServed: "PK",
+        availableLanguage: ["English", "Urdu", "Pashto"],
+      },
+    ],
+  };
+}
+
+export function generateWebSiteJsonLd() {
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "@id": `${SITE_URL}/#website`,
+    name: "Adi Photography & Films",
+    url: SITE_URL,
+    inLanguage: "en-PK",
+    publisher: { "@id": `${SITE_URL}/#organization` },
+    potentialAction: {
+      "@type": "SearchAction",
+      target: {
+        "@type": "EntryPoint",
+        urlTemplate: `${SITE_URL}/blog?q={search_term_string}`,
+      },
+      "query-input": "required name=search_term_string",
+    },
   };
 }
 
