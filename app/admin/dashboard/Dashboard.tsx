@@ -138,39 +138,20 @@ export default function Dashboard() {
     window.setTimeout(() => setToast(null), 2500);
   }
 
-  function uploadWithProgress(form: FormData, fileCount: number): Promise<unknown> {
-    return new Promise((resolve, reject) => {
+  function putToR2(file: File, uploadUrl: string, onProgress: (loaded: number) => void) {
+    return new Promise<void>((resolve, reject) => {
       const xhr = new XMLHttpRequest();
-      xhr.open('POST', '/api/admin/upload');
+      xhr.open('PUT', uploadUrl);
+      xhr.setRequestHeader('Content-Type', file.type);
       xhr.upload.onprogress = (e) => {
-        if (!e.lengthComputable) return;
-        const pct = Math.min(99, Math.round((e.loaded / e.total) * 100));
-        setUploadPct(pct);
-        const sent = formatBytes(e.loaded);
-        const total = formatBytes(e.total);
-        setUploadLabel(
-          `Uploading ${fileCount} file${fileCount === 1 ? '' : 's'} · ${sent} / ${total}`,
-        );
-      };
-      xhr.upload.onload = () => {
-        setUploadPct(99);
-        setUploadLabel('Saving to R2…');
+        if (e.lengthComputable) onProgress(e.loaded);
       };
       xhr.onload = () => {
-        setUploadPct(100);
-        try {
-          const data = JSON.parse(xhr.responseText);
-          if (xhr.status >= 200 && xhr.status < 300 && data.ok) {
-            resolve(data);
-          } else {
-            reject(new Error(data.error ?? `Upload failed (${xhr.status})`));
-          }
-        } catch {
-          reject(new Error('Invalid server response'));
-        }
+        if (xhr.status >= 200 && xhr.status < 300) resolve();
+        else reject(new Error(`R2 rejected file (${xhr.status})`));
       };
       xhr.onerror = () => reject(new Error('Network error during upload'));
-      xhr.send(form);
+      xhr.send(file);
     });
   }
 
@@ -181,34 +162,71 @@ export default function Dashboard() {
       return;
     }
     const list = Array.from(files);
+    const totalBytesToUpload = list.reduce((sum, f) => sum + f.size, 0);
     setUploading(true);
     setUploadPct(0);
     setUploadLabel(`Preparing ${list.length} file${list.length === 1 ? '' : 's'}…`);
     setError(null);
-    try {
-      const form = new FormData();
-      form.append('folder', folder);
-      if (folder === 'portfolio' && category !== 'all') form.append('category', category);
-      list.forEach((f) => form.append('files', f));
-      const data = (await uploadWithProgress(form, list.length)) as {
-        uploaded?: unknown[];
-        failures?: { name: string; reason: string }[];
-      };
-      const okCount = data.uploaded?.length ?? 0;
-      const failCount = data.failures?.length ?? 0;
-      notify(`Uploaded ${okCount}${failCount ? ` · ${failCount} failed` : ''}`);
-      if (failCount && data.failures?.[0]?.reason) {
-        setError(`${data.failures[0].name}: ${data.failures[0].reason}`);
+
+    let okCount = 0;
+    const failures: { name: string; reason: string }[] = [];
+    const perFileLoaded = new Map<number, number>();
+
+    const updateOverall = () => {
+      const loaded = Array.from(perFileLoaded.values()).reduce((a, b) => a + b, 0);
+      const pct = totalBytesToUpload > 0 ? Math.min(99, Math.round((loaded / totalBytesToUpload) * 100)) : 0;
+      setUploadPct(pct);
+      setUploadLabel(
+        `Uploading ${okCount} of ${list.length} · ${formatBytes(loaded)} / ${formatBytes(totalBytesToUpload)}`,
+      );
+    };
+
+    for (let i = 0; i < list.length; i++) {
+      const file = list[i];
+      try {
+        const signRes = await fetch('/api/admin/sign-upload', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            folder,
+            category: folder === 'portfolio' && category !== 'all' ? category : undefined,
+            filename: file.name,
+            contentType: file.type,
+            size: file.size,
+          }),
+        });
+        const signData = await signRes.json();
+        if (!signRes.ok || !signData.ok) {
+          throw new Error(signData.error ?? 'Failed to prepare upload');
+        }
+        await putToR2(file, signData.uploadUrl, (loaded) => {
+          perFileLoaded.set(i, loaded);
+          updateOverall();
+        });
+        perFileLoaded.set(i, file.size);
+        okCount += 1;
+        updateOverall();
+      } catch (err) {
+        failures.push({
+          name: file.name,
+          reason: err instanceof Error ? err.message : 'Upload failed',
+        });
+        perFileLoaded.set(i, file.size); // count as "done" for progress purposes
+        updateOverall();
       }
-      await Promise.all([refreshList(folder, category), refreshStats()]);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Upload failed');
-    } finally {
-      setUploading(false);
-      setUploadPct(0);
-      setUploadLabel('');
-      if (fileInputRef.current) fileInputRef.current.value = '';
     }
+
+    setUploadPct(100);
+    setUploadLabel('Done');
+    notify(`Uploaded ${okCount}${failures.length ? ` · ${failures.length} failed` : ''}`);
+    if (failures.length && failures[0].reason) {
+      setError(`${failures[0].name}: ${failures[0].reason}`);
+    }
+    await Promise.all([refreshList(folder, category), refreshStats()]);
+    setUploading(false);
+    setUploadPct(0);
+    setUploadLabel('');
+    if (fileInputRef.current) fileInputRef.current.value = '';
   }
 
   async function deleteKeys(keys: string[], confirmMessage: string) {
