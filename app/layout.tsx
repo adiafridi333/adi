@@ -56,9 +56,6 @@ export const metadata: Metadata = {
     follow: true,
   },
   manifest: "/manifest.json",
-  icons: {
-    apple: "/apple-touch-icon.png",
-  },
   other: {
     "geo.region": "PK-KP",
     "geo.placename": "Peshawar",
