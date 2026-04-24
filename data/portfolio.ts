@@ -12,7 +12,6 @@ export type PortfolioCategory =
   | "weddings"
   | "corporate"
   | "events"
-  | "drone"
   | "fashion"
   | "videography";
 
@@ -41,19 +40,11 @@ export const portfolioCategories: {
   },
   {
     slug: "events",
-    label: "Events",
-    h1: "Event Photography Portfolio | Peshawar, Pakistan",
-    metaTitle: "Event Photography Portfolio | Adi Photography Peshawar",
+    label: "Music Events",
+    h1: "Music Event Photography Portfolio | Peshawar, Pakistan",
+    metaTitle: "Music Event Photography Portfolio | Adi Photography Peshawar",
     metaDescription:
-      "Browse our event photography portfolio showcasing celebrations, seminars, and gatherings in Peshawar captured by Adi Photography.",
-  },
-  {
-    slug: "drone",
-    label: "Drone",
-    h1: "Drone & Aerial Photography Portfolio | Peshawar, Pakistan",
-    metaTitle: "Drone Photography Portfolio | Adi Photography Peshawar",
-    metaDescription:
-      "View stunning aerial and drone photography from Peshawar and Pakistan. Breathtaking bird's-eye views by Adi Photography.",
+      "Browse our music event photography portfolio showcasing concerts, performances, and live shows in Peshawar captured by Adi Photography.",
   },
   {
     slug: "fashion",

@@ -25,7 +25,6 @@ const PORTFOLIO_CATEGORIES = [
   'weddings',
   'corporate',
   'events',
-  'drone',
   'fashion',
   'videography',
 ] as const;
@@ -34,8 +33,7 @@ type PortfolioCategory = (typeof PORTFOLIO_CATEGORIES)[number];
 const CATEGORY_LABELS: Record<PortfolioCategory, string> = {
   weddings: 'Weddings',
   corporate: 'Corporate',
-  events: 'Events',
-  drone: 'Drone',
+  events: 'Music Events',
   fashion: 'Fashion',
   videography: 'Videography',
 };

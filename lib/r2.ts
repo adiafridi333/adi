@@ -45,7 +45,6 @@ export const PORTFOLIO_CATEGORIES = [
   'weddings',
   'corporate',
   'events',
-  'drone',
   'fashion',
   'videography',
 ] as const;
