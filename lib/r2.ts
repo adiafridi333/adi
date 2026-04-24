@@ -20,6 +20,10 @@ export function getR2Client(): S3Client {
       region: 'auto',
       endpoint: `https://${accountId}.r2.cloudflarestorage.com`,
       credentials: { accessKeyId, secretAccessKey },
+      // R2 doesn't validate AWS SDK v3's default CRC32 checksum, and
+      // browsers can't compute it for direct presigned PUTs.
+      requestChecksumCalculation: 'WHEN_REQUIRED',
+      responseChecksumValidation: 'WHEN_REQUIRED',
     });
   }
   return client;
