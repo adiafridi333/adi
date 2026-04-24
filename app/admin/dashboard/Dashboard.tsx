@@ -43,6 +43,17 @@ type Item = {
   url: string;
 };
 
+type VideoEntry = {
+  id: string;
+  url: string;
+  provider: 'youtube' | 'vimeo' | 'direct';
+  videoId?: string;
+  embedUrl: string;
+  thumbnailUrl?: string;
+  title?: string;
+  addedAt: number;
+};
+
 type Stats = {
   totalCount: number;
   totalBytes: number;
@@ -70,13 +81,14 @@ function timeAgo(iso: string | null): string {
   return new Date(iso).toLocaleDateString();
 }
 
-const FREE_TIER_BYTES = 10 * 1024 * 1024 * 1024; // 10 GB
+const FREE_TIER_BYTES = 10 * 1024 * 1024 * 1024;
 
 export default function Dashboard() {
   const router = useRouter();
   const [folder, setFolder] = useState<Folder>('portfolio');
   const [category, setCategory] = useState<PortfolioCategory | 'all'>('all');
   const [items, setItems] = useState<Item[]>([]);
+  const [videos, setVideos] = useState<VideoEntry[]>([]);
   const [stats, setStats] = useState<Stats | null>(null);
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(false);
@@ -86,7 +98,12 @@ export default function Dashboard() {
   const [error, setError] = useState<string | null>(null);
   const [toast, setToast] = useState<string | null>(null);
   const [dragOver, setDragOver] = useState(false);
+  const [videoUrl, setVideoUrl] = useState('');
+  const [videoTitle, setVideoTitle] = useState('');
+  const [videoAdding, setVideoAdding] = useState(false);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  const isVideography = folder === 'portfolio' && category === 'videography';
 
   const refreshList = useCallback(async (f: Folder, cat: PortfolioCategory | 'all') => {
     setLoading(true);
@@ -107,6 +124,16 @@ export default function Dashboard() {
     }
   }, []);
 
+  const refreshVideos = useCallback(async () => {
+    try {
+      const res = await fetch('/api/admin/videos', { cache: 'no-store' });
+      const data = await res.json();
+      if (res.ok && data.ok) setVideos(data.items);
+    } catch {
+      // non-fatal
+    }
+  }, []);
+
   const refreshStats = useCallback(async () => {
     try {
       const res = await fetch('/api/admin/stats', { cache: 'no-store' });
@@ -122,10 +149,13 @@ export default function Dashboard() {
   }, [folder, category, refreshList]);
 
   useEffect(() => {
+    if (isVideography) refreshVideos();
+  }, [isVideography, refreshVideos]);
+
+  useEffect(() => {
     refreshStats();
   }, [refreshStats]);
 
-  // Reset category when leaving portfolio
   useEffect(() => {
     if (folder !== 'portfolio') setCategory('all');
   }, [folder]);
@@ -214,7 +244,7 @@ export default function Dashboard() {
           name: file.name,
           reason: err instanceof Error ? err.message : 'Upload failed',
         });
-        perFileLoaded.set(i, file.size); // count as "done" for progress purposes
+        perFileLoaded.set(i, file.size);
         updateOverall();
       }
     }
@@ -263,6 +293,48 @@ export default function Dashboard() {
     await deleteKeys([key], `Delete "${name}"? This cannot be undone.`);
   }
 
+  async function handleAddVideo(e: React.FormEvent) {
+    e.preventDefault();
+    if (!videoUrl.trim()) return;
+    setVideoAdding(true);
+    setError(null);
+    try {
+      const res = await fetch('/api/admin/videos', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url: videoUrl, title: videoTitle }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.ok) throw new Error(data.error ?? 'Failed to add video');
+      notify('Video added');
+      setVideoUrl('');
+      setVideoTitle('');
+      await refreshVideos();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to add video');
+    } finally {
+      setVideoAdding(false);
+    }
+  }
+
+  async function handleDeleteVideo(id: string, title?: string) {
+    if (!confirm(`Delete "${title || 'this video'}"? This cannot be undone.`)) return;
+    setError(null);
+    try {
+      const res = await fetch('/api/admin/videos', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.ok) throw new Error(data.error ?? 'Delete failed');
+      notify('Video removed');
+      await refreshVideos();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Delete failed');
+    }
+  }
+
   async function logout() {
     await fetch('/api/admin/logout', { method: 'POST' });
     router.replace('/admin');
@@ -302,15 +374,15 @@ export default function Dashboard() {
   const uploadDisabled = uploading || (folder === 'portfolio' && category === 'all');
 
   return (
-    <div className="min-h-screen bg-neutral-950 text-neutral-100">
-      <header className="sticky top-0 z-20 border-b border-neutral-800/80 bg-neutral-950/85 backdrop-blur">
+    <div className="min-h-screen bg-neutral-50 text-neutral-900">
+      <header className="sticky top-0 z-20 border-b border-neutral-200 bg-white/90 backdrop-blur">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3">
           <div className="flex items-center gap-2">
-            <div className="grid h-8 w-8 place-items-center rounded-lg bg-emerald-500 text-sm font-bold text-neutral-950">
+            <div className="grid h-8 w-8 place-items-center rounded-lg bg-neutral-900 text-sm font-bold text-white">
               A
             </div>
             <div>
-              <div className="text-sm font-semibold">Admin</div>
+              <div className="text-sm font-semibold text-neutral-900">Admin</div>
               <div className="text-[11px] text-neutral-500">Adi Photography · Cloudflare R2</div>
             </div>
           </div>
@@ -319,13 +391,13 @@ export default function Dashboard() {
               href="/"
               target="_blank"
               rel="noreferrer"
-              className="hidden rounded-lg border border-neutral-800 px-3 py-1.5 text-xs text-neutral-300 hover:bg-neutral-900 sm:inline-block"
+              className="hidden rounded-lg border border-neutral-200 bg-white px-3 py-1.5 text-xs text-neutral-700 hover:bg-neutral-100 sm:inline-block"
             >
               View site ↗
             </a>
             <button
               onClick={logout}
-              className="rounded-lg border border-neutral-800 px-3 py-1.5 text-xs text-neutral-300 hover:bg-neutral-900"
+              className="rounded-lg border border-neutral-200 bg-white px-3 py-1.5 text-xs text-neutral-700 hover:bg-neutral-100"
             >
               Sign out
             </button>
@@ -335,39 +407,34 @@ export default function Dashboard() {
 
       <div className="mx-auto max-w-7xl px-4 py-6">
         <section className="mb-6 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          <div className="rounded-xl border border-neutral-800 bg-neutral-900/60 p-4">
+          <div className="rounded-xl border border-neutral-200 bg-white p-4 shadow-sm">
             <div className="text-[11px] uppercase tracking-wide text-neutral-500">Storage used</div>
             <div className="mt-1 text-2xl font-semibold tabular-nums">{formatBytes(totalBytes)}</div>
-            <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-neutral-800">
-              <div
-                className="h-full bg-emerald-500 transition-all"
-                style={{ width: `${usedPct}%` }}
-              />
+            <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-neutral-200">
+              <div className="h-full bg-emerald-500 transition-all" style={{ width: `${usedPct}%` }} />
             </div>
-            <div className="mt-1 text-[11px] text-neutral-500">
-              {usedPct.toFixed(2)}% of 10 GB free tier
-            </div>
+            <div className="mt-1 text-[11px] text-neutral-500">{usedPct.toFixed(2)}% of 10 GB free tier</div>
           </div>
-          <div className="rounded-xl border border-neutral-800 bg-neutral-900/60 p-4">
+          <div className="rounded-xl border border-neutral-200 bg-white p-4 shadow-sm">
             <div className="text-[11px] uppercase tracking-wide text-neutral-500">Total files</div>
             <div className="mt-1 text-2xl font-semibold tabular-nums">{totalCount}</div>
             <div className="mt-1 text-[11px] text-neutral-500">across all folders</div>
           </div>
-          <div className="rounded-xl border border-neutral-800 bg-neutral-900/60 p-4">
+          <div className="rounded-xl border border-neutral-200 bg-white p-4 shadow-sm">
             <div className="text-[11px] uppercase tracking-wide text-neutral-500">
               {FOLDER_LABELS[folder]} folder
             </div>
             <div className="mt-1 text-2xl font-semibold tabular-nums">{folderCount}</div>
             <div className="mt-1 text-[11px] text-neutral-500">{formatBytes(folderBytes)}</div>
           </div>
-          <div className="rounded-xl border border-neutral-800 bg-neutral-900/60 p-4">
+          <div className="rounded-xl border border-neutral-200 bg-white p-4 shadow-sm">
             <div className="text-[11px] uppercase tracking-wide text-neutral-500">Bucket</div>
-            <div className="mt-1 truncate text-sm font-medium text-neutral-200">images</div>
+            <div className="mt-1 truncate text-sm font-medium text-neutral-700">images</div>
             <div className="mt-1 text-[11px] text-neutral-500">Cloudflare R2 · public</div>
           </div>
         </section>
 
-        <section className="mb-3 flex flex-wrap items-center gap-1.5 rounded-xl border border-neutral-800 bg-neutral-900/60 p-1.5">
+        <section className="mb-3 flex flex-wrap items-center gap-1.5 rounded-xl border border-neutral-200 bg-white p-1.5 shadow-sm">
           {FOLDERS.map((f) => {
             const count = stats?.folders?.[f]?.count ?? 0;
             const isActive = folder === f;
@@ -376,15 +443,13 @@ export default function Dashboard() {
                 key={f}
                 onClick={() => setFolder(f)}
                 className={`flex items-center gap-2 rounded-lg px-3 py-1.5 text-sm transition ${
-                  isActive
-                    ? 'bg-white text-neutral-900'
-                    : 'text-neutral-300 hover:bg-neutral-800/80'
+                  isActive ? 'bg-neutral-900 text-white' : 'text-neutral-700 hover:bg-neutral-100'
                 }`}
               >
                 <span>{FOLDER_LABELS[f]}</span>
                 <span
                   className={`rounded-md px-1.5 py-0.5 text-[10px] tabular-nums ${
-                    isActive ? 'bg-neutral-200 text-neutral-700' : 'bg-neutral-800 text-neutral-400'
+                    isActive ? 'bg-white/20 text-white' : 'bg-neutral-100 text-neutral-600'
                   }`}
                 >
                   {count}
@@ -395,13 +460,13 @@ export default function Dashboard() {
         </section>
 
         {folder === 'portfolio' && (
-          <section className="mb-3 flex flex-wrap items-center gap-1.5 rounded-xl border border-neutral-800 bg-neutral-900/40 p-1.5">
+          <section className="mb-3 flex flex-wrap items-center gap-1.5 rounded-xl border border-neutral-200 bg-neutral-50 p-1.5">
             <button
               onClick={() => setCategory('all')}
               className={`flex items-center gap-2 rounded-lg px-2.5 py-1 text-xs transition ${
                 category === 'all'
-                  ? 'bg-emerald-500 text-neutral-950'
-                  : 'text-neutral-300 hover:bg-neutral-800/80'
+                  ? 'bg-emerald-500 text-white'
+                  : 'text-neutral-700 hover:bg-white'
               }`}
             >
               All
@@ -414,18 +479,16 @@ export default function Dashboard() {
                   key={c}
                   onClick={() => setCategory(c)}
                   className={`flex items-center gap-2 rounded-lg px-2.5 py-1 text-xs transition ${
-                    isActive
-                      ? 'bg-emerald-500 text-neutral-950'
-                      : 'text-neutral-300 hover:bg-neutral-800/80'
+                    isActive ? 'bg-emerald-500 text-white' : 'text-neutral-700 hover:bg-white'
                   }`}
                 >
                   <span>{CATEGORY_LABELS[c]}</span>
                   <span
                     className={`rounded px-1 py-0.5 text-[10px] tabular-nums ${
-                      isActive ? 'bg-emerald-700/40 text-emerald-50' : 'bg-neutral-800 text-neutral-400'
+                      isActive ? 'bg-white/25 text-white' : 'bg-white text-neutral-500'
                     }`}
                   >
-                    {count}
+                    {c === 'videography' && isActive ? videos.length : count}
                   </span>
                 </button>
               );
@@ -434,205 +497,287 @@ export default function Dashboard() {
         )}
 
         <p className="mb-3 text-xs text-neutral-500">
-          {folder === 'portfolio' && category !== 'all'
-            ? `Uploads will be saved to portfolio/${category}/`
-            : FOLDER_HINTS[folder]}
+          {isVideography
+            ? 'Paste YouTube, Vimeo, or direct .mp4 URLs — no file uploads here.'
+            : folder === 'portfolio' && category !== 'all'
+              ? `Uploads will be saved to portfolio/${category}/`
+              : FOLDER_HINTS[folder]}
         </p>
 
-        <section
-          onDragOver={(e) => {
-            if (uploadDisabled) return;
-            e.preventDefault();
-            setDragOver(true);
-          }}
-          onDragLeave={() => setDragOver(false)}
-          onDrop={(e) => {
-            if (uploadDisabled) return;
-            onDrop(e);
-          }}
-          className={`mb-4 rounded-xl border-2 border-dashed p-6 text-center transition ${
-            dragOver
-              ? 'border-emerald-400 bg-emerald-500/10'
-              : 'border-neutral-800 bg-neutral-900/40'
-          } ${uploadDisabled && !uploading ? 'opacity-60' : ''}`}
-        >
-          {folder === 'portfolio' && category === 'all' ? (
-            <div className="text-sm text-amber-300">
-              Pick a category above (Weddings, Corporate, …) before uploading.
-            </div>
-          ) : uploading ? (
-            <div className="space-y-2">
-              <div className="text-sm font-medium text-neutral-200">{uploadLabel || 'Uploading…'}</div>
-              <div className="mx-auto h-2 max-w-md overflow-hidden rounded-full bg-neutral-800">
-                <div
-                  className="h-full bg-emerald-500 transition-all duration-150"
-                  style={{ width: `${uploadPct}%` }}
-                />
-              </div>
-              <div className="text-xs tabular-nums text-neutral-400">{uploadPct}%</div>
-            </div>
-          ) : (
-            <>
-              <div className="mb-3 text-sm text-neutral-400">Drag & drop images here, or</div>
-              <label className="inline-block cursor-pointer rounded-lg bg-emerald-500 px-4 py-2 text-sm font-medium text-neutral-950 transition hover:bg-emerald-400">
-                Choose files
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  multiple
-                  accept="image/*"
-                  onChange={(e) => handleUpload(e.target.files)}
-                  disabled={uploadDisabled}
-                  className="hidden"
-                />
-              </label>
-              <div className="mt-2 text-[11px] text-neutral-500">
-                JPG · PNG · WebP · GIF · AVIF · SVG · max 25 MB each
-              </div>
-            </>
-          )}
-        </section>
-
-        <div className="mb-3 flex flex-wrap items-center gap-2">
-          <button
-            onClick={handleDeleteSelected}
-            disabled={selected.size === 0}
-            className="rounded-lg border border-red-700/60 bg-red-950/30 px-3 py-1.5 text-sm text-red-300 hover:bg-red-900/50 disabled:cursor-not-allowed disabled:opacity-30"
-          >
-            Delete selected ({selected.size})
-          </button>
-          {items.length > 0 && (
-            <button
-              onClick={toggleAll}
-              className="rounded-lg border border-neutral-800 px-3 py-1.5 text-sm text-neutral-300 hover:bg-neutral-900"
+        {isVideography ? (
+          <>
+            <form
+              onSubmit={handleAddVideo}
+              className="mb-4 space-y-2 rounded-xl border border-neutral-200 bg-white p-4 shadow-sm"
             >
-              {selected.size === items.length ? 'Clear selection' : 'Select all'}
-            </button>
-          )}
-          <div className="ml-auto text-xs text-neutral-500">
-            {items.length} item{items.length === 1 ? '' : 's'}
-          </div>
-          <button
-            onClick={() => {
-              refreshList(folder, category);
-              refreshStats();
-            }}
-            className="rounded-lg border border-neutral-800 px-3 py-1.5 text-sm text-neutral-300 hover:bg-neutral-900"
-          >
-            Refresh
-          </button>
-        </div>
+              <label className="block text-xs font-medium text-neutral-700">Video URL</label>
+              <input
+                type="url"
+                placeholder="https://www.youtube.com/watch?v=… or https://vimeo.com/…"
+                value={videoUrl}
+                onChange={(e) => setVideoUrl(e.target.value)}
+                required
+                className="w-full rounded-lg border border-neutral-300 bg-white px-3 py-2 text-sm outline-none focus:border-neutral-500"
+              />
+              <label className="block text-xs font-medium text-neutral-700">
+                Title <span className="font-normal text-neutral-400">(optional)</span>
+              </label>
+              <input
+                type="text"
+                placeholder="e.g. Wedding film — Hayat & Ayesha"
+                value={videoTitle}
+                onChange={(e) => setVideoTitle(e.target.value)}
+                className="w-full rounded-lg border border-neutral-300 bg-white px-3 py-2 text-sm outline-none focus:border-neutral-500"
+              />
+              <button
+                type="submit"
+                disabled={videoAdding || !videoUrl.trim()}
+                className="rounded-lg bg-neutral-900 px-4 py-2 text-sm font-medium text-white hover:bg-neutral-700 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {videoAdding ? 'Adding…' : 'Add video'}
+              </button>
+            </form>
+
+            {videos.length === 0 ? (
+              <div className="rounded-xl border border-dashed border-neutral-300 bg-white px-4 py-16 text-center shadow-sm">
+                <div className="mb-1 text-neutral-700">No videos added yet.</div>
+                <div className="text-xs text-neutral-500">
+                  Paste a YouTube, Vimeo, or direct .mp4 URL above.
+                </div>
+              </div>
+            ) : (
+              <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                {videos.map((v) => (
+                  <li
+                    key={v.id}
+                    className="overflow-hidden rounded-xl border border-neutral-200 bg-white shadow-sm"
+                  >
+                    <div className="relative aspect-video bg-neutral-100">
+                      {v.thumbnailUrl ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img src={v.thumbnailUrl} alt="" className="h-full w-full object-cover" />
+                      ) : (
+                        <div className="grid h-full w-full place-items-center text-neutral-400">
+                          <span className="text-xs uppercase tracking-wide">
+                            {v.provider}
+                          </span>
+                        </div>
+                      )}
+                      <span className="absolute left-2 top-2 rounded-md bg-black/70 px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wider text-white">
+                        {v.provider}
+                      </span>
+                    </div>
+                    <div className="space-y-1 p-3">
+                      <div className="truncate text-sm font-medium text-neutral-900" title={v.title || v.url}>
+                        {v.title || v.url}
+                      </div>
+                      <a
+                        href={v.url}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="block truncate text-xs text-neutral-500 hover:text-neutral-700"
+                      >
+                        {v.url}
+                      </a>
+                      <div className="flex items-center gap-2 pt-1">
+                        <button
+                          onClick={() => copyUrl(v.url)}
+                          className="rounded-md border border-neutral-200 px-2 py-1 text-[11px] text-neutral-700 hover:bg-neutral-100"
+                        >
+                          Copy URL
+                        </button>
+                        <button
+                          onClick={() => handleDeleteVideo(v.id, v.title)}
+                          className="ml-auto rounded-md border border-red-200 bg-red-50 px-2 py-1 text-[11px] text-red-700 hover:bg-red-100"
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </>
+        ) : (
+          <>
+            <section
+              onDragOver={(e) => {
+                if (uploadDisabled) return;
+                e.preventDefault();
+                setDragOver(true);
+              }}
+              onDragLeave={() => setDragOver(false)}
+              onDrop={(e) => {
+                if (uploadDisabled) return;
+                onDrop(e);
+              }}
+              className={`mb-4 rounded-xl border-2 border-dashed bg-white p-6 text-center shadow-sm transition ${
+                dragOver ? 'border-emerald-500 bg-emerald-50' : 'border-neutral-300'
+              } ${uploadDisabled && !uploading ? 'opacity-60' : ''}`}
+            >
+              {folder === 'portfolio' && category === 'all' ? (
+                <div className="text-sm text-amber-700">
+                  Pick a category above (Weddings, Corporate, …) before uploading.
+                </div>
+              ) : uploading ? (
+                <div className="space-y-2">
+                  <div className="text-sm font-medium text-neutral-800">{uploadLabel || 'Uploading…'}</div>
+                  <div className="mx-auto h-2 max-w-md overflow-hidden rounded-full bg-neutral-200">
+                    <div className="h-full bg-emerald-500 transition-all duration-150" style={{ width: `${uploadPct}%` }} />
+                  </div>
+                  <div className="text-xs tabular-nums text-neutral-500">{uploadPct}%</div>
+                </div>
+              ) : (
+                <>
+                  <div className="mb-3 text-sm text-neutral-600">Drag & drop images here, or</div>
+                  <label className="inline-block cursor-pointer rounded-lg bg-neutral-900 px-4 py-2 text-sm font-medium text-white hover:bg-neutral-700">
+                    Choose files
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      multiple
+                      accept="image/*"
+                      onChange={(e) => handleUpload(e.target.files)}
+                      disabled={uploadDisabled}
+                      className="hidden"
+                    />
+                  </label>
+                  <div className="mt-2 text-[11px] text-neutral-500">
+                    JPG · PNG · WebP · GIF · AVIF · SVG · max 25 MB each
+                  </div>
+                </>
+              )}
+            </section>
+
+            <div className="mb-3 flex flex-wrap items-center gap-2">
+              <button
+                onClick={handleDeleteSelected}
+                disabled={selected.size === 0}
+                className="rounded-lg border border-red-200 bg-red-50 px-3 py-1.5 text-sm text-red-700 hover:bg-red-100 disabled:cursor-not-allowed disabled:opacity-40"
+              >
+                Delete selected ({selected.size})
+              </button>
+              {items.length > 0 && (
+                <button
+                  onClick={toggleAll}
+                  className="rounded-lg border border-neutral-200 bg-white px-3 py-1.5 text-sm text-neutral-700 hover:bg-neutral-100"
+                >
+                  {selected.size === items.length ? 'Clear selection' : 'Select all'}
+                </button>
+              )}
+              <div className="ml-auto text-xs text-neutral-500">
+                {items.length} item{items.length === 1 ? '' : 's'}
+              </div>
+              <button
+                onClick={() => {
+                  refreshList(folder, category);
+                  refreshStats();
+                }}
+                className="rounded-lg border border-neutral-200 bg-white px-3 py-1.5 text-sm text-neutral-700 hover:bg-neutral-100"
+              >
+                Refresh
+              </button>
+            </div>
+
+            {loading ? (
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+                {Array.from({ length: 10 }).map((_, i) => (
+                  <div key={i} className="aspect-square animate-pulse rounded-xl bg-neutral-100" />
+                ))}
+              </div>
+            ) : items.length === 0 ? (
+              <div className="rounded-xl border border-dashed border-neutral-300 bg-white px-4 py-16 text-center shadow-sm">
+                <div className="mb-1 text-neutral-700">
+                  No images in {FOLDER_LABELS[folder]}
+                  {folder === 'portfolio' && category !== 'all' ? ` / ${CATEGORY_LABELS[category]}` : ''} yet.
+                </div>
+                <div className="text-xs text-neutral-500">Drag files into the area above to upload.</div>
+              </div>
+            ) : (
+              <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+                {items.map((item) => {
+                  const isSel = selected.has(item.key);
+                  const name = item.key.split('/').slice(1).join('/');
+                  return (
+                    <li
+                      key={item.key}
+                      className={`group relative overflow-hidden rounded-xl border bg-white shadow-sm transition ${
+                        isSel ? 'border-emerald-500 ring-2 ring-emerald-500/30' : 'border-neutral-200 hover:border-neutral-300'
+                      }`}
+                    >
+                      <button
+                        onClick={() => toggle(item.key)}
+                        className="block w-full text-left"
+                        aria-label={`Toggle ${name}`}
+                      >
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={item.url} alt={name} loading="lazy" className="aspect-square w-full object-cover" />
+                      </button>
+                      <div className="space-y-0.5 p-2">
+                        <div className="truncate text-xs text-neutral-800" title={name}>
+                          {name}
+                        </div>
+                        <div className="flex items-center justify-between text-[10px] text-neutral-500">
+                          <span>{formatBytes(item.size)}</span>
+                          <span>{timeAgo(item.lastModified)}</span>
+                        </div>
+                      </div>
+                      <div
+                        className={`pointer-events-none absolute right-2 top-2 grid h-5 w-5 place-items-center rounded-full text-[10px] font-bold transition ${
+                          isSel ? 'bg-emerald-500 text-white' : 'bg-white/90 text-neutral-700 opacity-0 group-hover:opacity-100'
+                        }`}
+                      >
+                        {isSel ? '✓' : '+'}
+                      </div>
+                      <div className="absolute bottom-12 right-2 flex gap-1 opacity-0 transition group-hover:opacity-100">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            copyUrl(item.url);
+                          }}
+                          className="rounded-md bg-white/95 px-1.5 py-0.5 text-[10px] text-neutral-800 shadow hover:bg-white"
+                          title="Copy URL"
+                        >
+                          Copy
+                        </button>
+                        <a
+                          href={item.url}
+                          target="_blank"
+                          rel="noreferrer"
+                          onClick={(e) => e.stopPropagation()}
+                          className="rounded-md bg-white/95 px-1.5 py-0.5 text-[10px] text-neutral-800 shadow hover:bg-white"
+                          title="Open"
+                        >
+                          Open
+                        </a>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDeleteOne(item.key);
+                          }}
+                          className="rounded-md bg-red-600 px-1.5 py-0.5 text-[10px] font-medium text-white hover:bg-red-500"
+                          title="Delete"
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
+          </>
+        )}
 
         {error && (
-          <div className="mb-4 rounded-lg border border-red-900 bg-red-950/40 px-3 py-2 text-sm text-red-300">
+          <div className="mt-4 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
             {error}
           </div>
         )}
 
-        {loading ? (
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-            {Array.from({ length: 10 }).map((_, i) => (
-              <div
-                key={i}
-                className="aspect-square animate-pulse rounded-xl bg-neutral-900"
-              />
-            ))}
-          </div>
-        ) : items.length === 0 ? (
-          <div className="rounded-xl border border-dashed border-neutral-800 bg-neutral-900/30 px-4 py-16 text-center">
-            <div className="mb-1 text-neutral-300">
-              No images in {FOLDER_LABELS[folder]}
-              {folder === 'portfolio' && category !== 'all' ? ` / ${CATEGORY_LABELS[category]}` : ''} yet.
-            </div>
-            <div className="text-xs text-neutral-500">
-              Drag files into the area above to upload.
-            </div>
-          </div>
-        ) : (
-          <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-            {items.map((item) => {
-              const isSel = selected.has(item.key);
-              const name = item.key.split('/').slice(1).join('/');
-              return (
-                <li
-                  key={item.key}
-                  className={`group relative overflow-hidden rounded-xl border transition ${
-                    isSel
-                      ? 'border-emerald-400 ring-2 ring-emerald-400/40'
-                      : 'border-neutral-800 hover:border-neutral-700'
-                  } bg-neutral-900`}
-                >
-                  <button
-                    onClick={() => toggle(item.key)}
-                    className="block w-full text-left"
-                    aria-label={`Toggle ${name}`}
-                  >
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={item.url}
-                      alt={name}
-                      loading="lazy"
-                      className="aspect-square w-full object-cover"
-                    />
-                  </button>
-                  <div className="space-y-0.5 p-2">
-                    <div className="truncate text-xs text-neutral-200" title={name}>
-                      {name}
-                    </div>
-                    <div className="flex items-center justify-between text-[10px] text-neutral-500">
-                      <span>{formatBytes(item.size)}</span>
-                      <span>{timeAgo(item.lastModified)}</span>
-                    </div>
-                  </div>
-                  <div
-                    className={`pointer-events-none absolute right-2 top-2 grid h-5 w-5 place-items-center rounded-full text-[10px] font-bold transition ${
-                      isSel
-                        ? 'bg-emerald-400 text-neutral-950'
-                        : 'bg-black/60 text-white opacity-0 group-hover:opacity-100'
-                    }`}
-                  >
-                    {isSel ? '✓' : '+'}
-                  </div>
-                  <div className="absolute bottom-12 right-2 flex gap-1 opacity-0 transition group-hover:opacity-100">
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        copyUrl(item.url);
-                      }}
-                      className="rounded-md bg-black/70 px-1.5 py-0.5 text-[10px] text-white hover:bg-black"
-                      title="Copy URL"
-                    >
-                      Copy
-                    </button>
-                    <a
-                      href={item.url}
-                      target="_blank"
-                      rel="noreferrer"
-                      onClick={(e) => e.stopPropagation()}
-                      className="rounded-md bg-black/70 px-1.5 py-0.5 text-[10px] text-white hover:bg-black"
-                      title="Open"
-                    >
-                      Open
-                    </a>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleDeleteOne(item.key);
-                      }}
-                      className="rounded-md bg-red-600/90 px-1.5 py-0.5 text-[10px] font-medium text-white hover:bg-red-500"
-                      title="Delete"
-                    >
-                      Delete
-                    </button>
-                  </div>
-                </li>
-              );
-            })}
-          </ul>
-        )}
-
         {toast && (
-          <div className="fixed bottom-4 right-4 z-30 rounded-lg bg-neutral-100 px-3 py-2 text-sm font-medium text-neutral-900 shadow-xl">
+          <div className="fixed bottom-4 right-4 z-30 rounded-lg bg-neutral-900 px-3 py-2 text-sm font-medium text-white shadow-xl">
             {toast}
           </div>
         )}

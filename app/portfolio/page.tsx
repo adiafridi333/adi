@@ -34,15 +34,15 @@ export default function PortfolioPage() {
             Our Photography Portfolio
           </h1>
           <p className="text-text-secondary font-dm text-lg max-w-2xl">
-            Explore our collection of wedding, corporate, event, drone, and fashion
-            photography from across Peshawar and Pakistan.
+            Explore our collection of wedding, corporate, music event, fashion, and
+            videography work from across Peshawar and Pakistan.
           </p>
         </Container>
       </section>
 
       <section className="py-12 bg-bg-primary">
         <Container>
-          <PortfolioGrid showFilters />
+          <PortfolioGrid showFilters={false} />
         </Container>
       </section>
     </>

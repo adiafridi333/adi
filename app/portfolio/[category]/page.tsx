@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import Container from "@/components/layout/Container";
 import Breadcrumbs from "@/components/ui/Breadcrumbs";
 import PortfolioCategoryGallery from "@/components/portfolio/PortfolioCategoryGallery";
+import VideographyGallery from "@/components/portfolio/VideographyGallery";
 import JsonLd from "@/components/seo/JsonLd";
 import {
   generatePageMetadata,
@@ -14,6 +15,7 @@ import {
   type PortfolioCategory,
 } from "@/data/portfolio";
 import { listPortfolioCategoryImages } from "@/lib/r2";
+import { readVideographyVideos } from "@/lib/videos-store";
 
 interface PortfolioCategoryPageProps {
   params: Promise<{ category: string }>;
@@ -46,9 +48,14 @@ export default async function PortfolioCategoryPage({
   const category = getPortfolioCategoryData(categorySlug);
   if (!category) notFound();
 
-  const images = await listPortfolioCategoryImages(
-    categorySlug as PortfolioCategory,
-  );
+  const isVideography = categorySlug === "videography";
+  const images = isVideography
+    ? []
+    : await listPortfolioCategoryImages(categorySlug as PortfolioCategory);
+  const videos = isVideography ? await readVideographyVideos() : [];
+
+  const count = isVideography ? videos.length : images.length;
+  const noun = isVideography ? "video" : "photograph";
 
   const breadcrumbs = [
     { name: "Home", url: "/" },
@@ -69,19 +76,23 @@ export default async function PortfolioCategoryPage({
             {category.h1}
           </h1>
           <p className="text-text-secondary font-dm">
-            {images.length === 0
-              ? "Photographs coming soon."
-              : `${images.length} photograph${images.length === 1 ? "" : "s"}`}
+            {count === 0
+              ? `${isVideography ? "Videos" : "Photographs"} coming soon.`
+              : `${count} ${noun}${count === 1 ? "" : "s"}`}
           </p>
         </Container>
       </section>
 
       <section className="py-12 bg-bg-primary">
         <Container>
-          <PortfolioCategoryGallery
-            images={images.map(({ key, url }) => ({ key, url }))}
-            categoryLabel={category.label}
-          />
+          {isVideography ? (
+            <VideographyGallery videos={videos} />
+          ) : (
+            <PortfolioCategoryGallery
+              images={images.map(({ key, url }) => ({ key, url }))}
+              categoryLabel={category.label}
+            />
+          )}
         </Container>
       </section>
     </>
