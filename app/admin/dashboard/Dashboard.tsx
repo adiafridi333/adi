@@ -4,21 +4,19 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { compressImageIfBig } from '@/lib/compress-image';
 
-const FOLDERS = ['portfolio', 'team', 'hero', 'blog'] as const;
+const FOLDERS = ['portfolio', 'team', 'general'] as const;
 type Folder = (typeof FOLDERS)[number];
 
 const FOLDER_LABELS: Record<Folder, string> = {
   portfolio: 'Portfolio',
   team: 'Team',
-  hero: 'Hero',
-  blog: 'Blog',
+  general: 'General',
 };
 
 const FOLDER_HINTS: Record<Folder, string> = {
   portfolio: 'Portfolio shots organised by category.',
   team: 'Headshots & team member photos.',
-  hero: 'Big banner / hero images.',
-  blog: 'Cover images & inline blog photos.',
+  general: 'Anything else — misc images, one-offs, references.',
 };
 
 const PORTFOLIO_CATEGORIES = [
