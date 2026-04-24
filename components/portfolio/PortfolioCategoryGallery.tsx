@@ -56,6 +56,7 @@ export default function PortfolioCategoryGallery({
                 alt={`${categoryLabel} photograph ${i + 1}`}
                 fill
                 sizes="(min-width: 1024px) 25vw, (min-width: 768px) 33vw, 50vw"
+                unoptimized
                 className="object-cover transition-transform duration-500 group-hover:scale-105"
               />
               <div className="absolute inset-0 bg-black/0 transition-colors duration-300 group-hover:bg-black/20" />

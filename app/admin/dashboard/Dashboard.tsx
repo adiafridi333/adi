@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { compressImageIfBig } from '@/lib/compress-image';
 
 const FOLDERS = ['portfolio', 'team', 'hero', 'blog'] as const;
 type Folder = (typeof FOLDERS)[number];
@@ -161,12 +162,18 @@ export default function Dashboard() {
       setError('Pick a portfolio category before uploading (Weddings, Corporate, etc.)');
       return;
     }
-    const list = Array.from(files);
-    const totalBytesToUpload = list.reduce((sum, f) => sum + f.size, 0);
+    const rawList = Array.from(files);
     setUploading(true);
     setUploadPct(0);
-    setUploadLabel(`Preparing ${list.length} file${list.length === 1 ? '' : 's'}…`);
+    setUploadLabel(`Preparing ${rawList.length} file${rawList.length === 1 ? '' : 's'}…`);
     setError(null);
+
+    const list: File[] = [];
+    for (let i = 0; i < rawList.length; i++) {
+      setUploadLabel(`Compressing ${i + 1} / ${rawList.length}…`);
+      list.push(await compressImageIfBig(rawList[i]));
+    }
+    const totalBytesToUpload = list.reduce((sum, f) => sum + f.size, 0);
 
     let okCount = 0;
     const failures: { name: string; reason: string }[] = [];
