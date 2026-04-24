@@ -3,6 +3,7 @@ import { Playfair_Display, DM_Sans } from "next/font/google";
 import "./globals.css";
 import SiteChrome from "@/components/layout/SiteChrome";
 import JsonLd from "@/components/seo/JsonLd";
+import ImageProtection from "@/components/security/ImageProtection";
 import { generateOrganizationJsonLd, generateWebSiteJsonLd } from "@/lib/metadata";
 
 const playfair = Playfair_Display({
@@ -85,6 +86,7 @@ export default function RootLayout({
         </a>
         <JsonLd data={generateOrganizationJsonLd()} />
         <JsonLd data={generateWebSiteJsonLd()} />
+        <ImageProtection />
         <SiteChrome>{children}</SiteChrome>
       </body>
     </html>

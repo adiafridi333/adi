@@ -34,6 +34,30 @@ body {
   overflow-x: hidden;
 }
 
+/* Image protection — block drag/select. Admin overrides below. */
+img,
+picture,
+[data-protect="true"] {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-user-drag: none;
+  user-drag: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Admin dashboard needs normal image behaviour for previews/uploads. */
+[data-admin="true"] img,
+[data-admin="true"] picture {
+  -webkit-user-select: auto;
+  user-select: auto;
+  -webkit-user-drag: auto;
+  user-drag: auto;
+  -webkit-touch-callout: default;
+}
+
 /* Heading defaults */
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-playfair), Georgia, serif;
