@@ -1,9 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Playfair_Display, DM_Sans } from "next/font/google";
 import "./globals.css";
-import Navbar from "@/components/layout/Navbar";
-import Footer from "@/components/layout/Footer";
-import WhatsAppBubble from "@/components/ui/WhatsAppBubble";
+import SiteChrome from "@/components/layout/SiteChrome";
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -83,10 +81,7 @@ export default function RootLayout({
         >
           Skip to main content
         </a>
-        <Navbar />
-        <main id="main-content">{children}</main>
-        <Footer />
-        <WhatsAppBubble />
+        <SiteChrome>{children}</SiteChrome>
       </body>
     </html>
   );

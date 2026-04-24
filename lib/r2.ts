@@ -30,7 +30,7 @@ export function publicUrlFor(key: string): string {
   return `${R2_PUBLIC_URL}/${key.split('/').map(encodeURIComponent).join('/')}`;
 }
 
-export const ALLOWED_FOLDERS = ['gallery', 'team', 'hero', 'blog'] as const;
+export const ALLOWED_FOLDERS = ['gallery', 'portfolio', 'team', 'hero', 'blog'] as const;
 export type Folder = (typeof ALLOWED_FOLDERS)[number];
 
 export function isAllowedFolder(value: string): value is Folder {
