@@ -42,7 +42,7 @@ export const team: TeamMember[] = [
     name: "Taimoor Ahmad",
     role: "Videographer & OB Operator",
     image: `${R2}/mocnjitt-9em7a5-taimoor-ahmad.png`,
-    bio: "Licensed drone pilot delivering breathtaking aerial footage and post-production editing.",
+    bio: "Professional videographer specializing in cinematic event coverage and storytelling.",
   },
   {
     name: "Ali Rehman",
