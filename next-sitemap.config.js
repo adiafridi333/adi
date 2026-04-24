@@ -6,6 +6,7 @@ module.exports = {
   changefreq: 'weekly',
   priority: 0.7,
   sitemapSize: 7000,
+  exclude: ['/admin', '/admin/*', '/api/*'],
   robotsTxtOptions: {
     additionalSitemaps: [
       `${process.env.NEXT_PUBLIC_SITE_URL || 'https://www.adiphotography.pk'}/image-sitemap.xml`,
@@ -14,10 +15,30 @@ module.exports = {
       {
         userAgent: '*',
         allow: '/',
+        disallow: [
+          '/admin',
+          '/admin/',
+          '/api/',
+          '/*.phtml$',
+          '/author/',
+          '/comments/feed/',
+          '/wp-admin/',
+          '/wp-content/',
+          '/wp-includes/',
+          '/wp-json/',
+          '/wp-login.php',
+          '/feed/',
+          '/rss/',
+          '/xmlrpc.php',
+          '/*?feed=',
+          '/*?replytocom=',
+        ],
       },
     ],
   },
   transform: async (config, path) => {
+    if (path.startsWith('/admin') || path.startsWith('/api')) return null;
+
     // Custom priority for key pages
     let priority = config.priority;
     let changefreq = config.changefreq;
