@@ -3,11 +3,10 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-const FOLDERS = ['gallery', 'portfolio', 'team', 'hero', 'blog'] as const;
+const FOLDERS = ['portfolio', 'team', 'hero', 'blog'] as const;
 type Folder = (typeof FOLDERS)[number];
 
 const FOLDER_LABELS: Record<Folder, string> = {
-  gallery: 'Gallery',
   portfolio: 'Portfolio',
   team: 'Team',
   hero: 'Hero',
@@ -15,11 +14,29 @@ const FOLDER_LABELS: Record<Folder, string> = {
 };
 
 const FOLDER_HINTS: Record<Folder, string> = {
-  gallery: 'Public photo gallery shown at /gallery.',
-  portfolio: 'Portfolio shots used across the site.',
+  portfolio: 'Portfolio shots organised by category.',
   team: 'Headshots & team member photos.',
   hero: 'Big banner / hero images.',
   blog: 'Cover images & inline blog photos.',
+};
+
+const PORTFOLIO_CATEGORIES = [
+  'weddings',
+  'corporate',
+  'events',
+  'drone',
+  'fashion',
+  'videography',
+] as const;
+type PortfolioCategory = (typeof PORTFOLIO_CATEGORIES)[number];
+
+const CATEGORY_LABELS: Record<PortfolioCategory, string> = {
+  weddings: 'Weddings',
+  corporate: 'Corporate',
+  events: 'Events',
+  drone: 'Drone',
+  fashion: 'Fashion',
+  videography: 'Videography',
 };
 
 type Item = {
@@ -33,6 +50,7 @@ type Stats = {
   totalCount: number;
   totalBytes: number;
   folders: Record<string, { count: number; bytes: number }>;
+  portfolioCategories?: Record<string, { count: number; bytes: number }>;
 };
 
 function formatBytes(n: number): string {
@@ -59,23 +77,27 @@ const FREE_TIER_BYTES = 10 * 1024 * 1024 * 1024; // 10 GB
 
 export default function Dashboard() {
   const router = useRouter();
-  const [folder, setFolder] = useState<Folder>('gallery');
+  const [folder, setFolder] = useState<Folder>('portfolio');
+  const [category, setCategory] = useState<PortfolioCategory | 'all'>('all');
   const [items, setItems] = useState<Item[]>([]);
   const [stats, setStats] = useState<Stats | null>(null);
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
-  const [uploadProgress, setUploadProgress] = useState<string | null>(null);
+  const [uploadPct, setUploadPct] = useState(0);
+  const [uploadLabel, setUploadLabel] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
   const [toast, setToast] = useState<string | null>(null);
   const [dragOver, setDragOver] = useState(false);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-  const refreshList = useCallback(async (f: Folder) => {
+  const refreshList = useCallback(async (f: Folder, cat: PortfolioCategory | 'all') => {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch(`/api/admin/list?folder=${f}`, { cache: 'no-store' });
+      const params = new URLSearchParams({ folder: f });
+      if (f === 'portfolio' && cat !== 'all') params.set('category', cat);
+      const res = await fetch(`/api/admin/list?${params.toString()}`, { cache: 'no-store' });
       const data = await res.json();
       if (!res.ok || !data.ok) throw new Error(data.error ?? 'Failed to load');
       setItems(data.items);
@@ -99,44 +121,92 @@ export default function Dashboard() {
   }, []);
 
   useEffect(() => {
-    refreshList(folder);
-  }, [folder, refreshList]);
+    refreshList(folder, category);
+  }, [folder, category, refreshList]);
 
   useEffect(() => {
     refreshStats();
   }, [refreshStats]);
+
+  // Reset category when leaving portfolio
+  useEffect(() => {
+    if (folder !== 'portfolio') setCategory('all');
+  }, [folder]);
 
   function notify(message: string) {
     setToast(message);
     window.setTimeout(() => setToast(null), 2500);
   }
 
+  function uploadWithProgress(form: FormData, fileCount: number): Promise<unknown> {
+    return new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      xhr.open('POST', '/api/admin/upload');
+      xhr.upload.onprogress = (e) => {
+        if (!e.lengthComputable) return;
+        const pct = Math.min(99, Math.round((e.loaded / e.total) * 100));
+        setUploadPct(pct);
+        const sent = formatBytes(e.loaded);
+        const total = formatBytes(e.total);
+        setUploadLabel(
+          `Uploading ${fileCount} file${fileCount === 1 ? '' : 's'} · ${sent} / ${total}`,
+        );
+      };
+      xhr.upload.onload = () => {
+        setUploadPct(99);
+        setUploadLabel('Saving to R2…');
+      };
+      xhr.onload = () => {
+        setUploadPct(100);
+        try {
+          const data = JSON.parse(xhr.responseText);
+          if (xhr.status >= 200 && xhr.status < 300 && data.ok) {
+            resolve(data);
+          } else {
+            reject(new Error(data.error ?? `Upload failed (${xhr.status})`));
+          }
+        } catch {
+          reject(new Error('Invalid server response'));
+        }
+      };
+      xhr.onerror = () => reject(new Error('Network error during upload'));
+      xhr.send(form);
+    });
+  }
+
   async function handleUpload(files: FileList | File[] | null) {
     if (!files || files.length === 0) return;
+    if (folder === 'portfolio' && category === 'all') {
+      setError('Pick a portfolio category before uploading (Weddings, Corporate, etc.)');
+      return;
+    }
     const list = Array.from(files);
     setUploading(true);
+    setUploadPct(0);
+    setUploadLabel(`Preparing ${list.length} file${list.length === 1 ? '' : 's'}…`);
     setError(null);
-    setUploadProgress(`Uploading 0 / ${list.length}…`);
     try {
       const form = new FormData();
       form.append('folder', folder);
+      if (folder === 'portfolio' && category !== 'all') form.append('category', category);
       list.forEach((f) => form.append('files', f));
-      setUploadProgress(`Uploading ${list.length} file${list.length === 1 ? '' : 's'}…`);
-      const res = await fetch('/api/admin/upload', { method: 'POST', body: form });
-      const data = await res.json();
-      if (!res.ok || !data.ok) throw new Error(data.error ?? 'Upload failed');
+      const data = (await uploadWithProgress(form, list.length)) as {
+        uploaded?: unknown[];
+        failures?: { name: string; reason: string }[];
+      };
       const okCount = data.uploaded?.length ?? 0;
       const failCount = data.failures?.length ?? 0;
       notify(`Uploaded ${okCount}${failCount ? ` · ${failCount} failed` : ''}`);
       if (failCount && data.failures?.[0]?.reason) {
         setError(`${data.failures[0].name}: ${data.failures[0].reason}`);
       }
-      await Promise.all([refreshList(folder), refreshStats()]);
+      await Promise.all([refreshList(folder, category), refreshStats()]);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Upload failed');
     } finally {
       setUploading(false);
-      setUploadProgress(null);
+      setUploadPct(0);
+      setUploadLabel('');
       if (fileInputRef.current) fileInputRef.current.value = '';
     }
   }
@@ -154,7 +224,7 @@ export default function Dashboard() {
       const data = await res.json();
       if (!res.ok || !data.ok) throw new Error(data.error ?? 'Delete failed');
       notify(`Deleted ${data.deleted?.length ?? 0}`);
-      await Promise.all([refreshList(folder), refreshStats()]);
+      await Promise.all([refreshList(folder, category), refreshStats()]);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Delete failed');
     }
@@ -208,6 +278,7 @@ export default function Dashboard() {
   const usedPct = Math.min(100, (totalBytes / FREE_TIER_BYTES) * 100);
   const folderBytes = stats?.folders?.[folder]?.bytes ?? 0;
   const folderCount = stats?.folders?.[folder]?.count ?? 0;
+  const uploadDisabled = uploading || (folder === 'portfolio' && category === 'all');
 
   return (
     <div className="min-h-screen bg-neutral-950 text-neutral-100">
@@ -275,7 +346,7 @@ export default function Dashboard() {
           </div>
         </section>
 
-        <section className="mb-4 flex flex-wrap items-center gap-1.5 rounded-xl border border-neutral-800 bg-neutral-900/60 p-1.5">
+        <section className="mb-3 flex flex-wrap items-center gap-1.5 rounded-xl border border-neutral-800 bg-neutral-900/60 p-1.5">
           {FOLDERS.map((f) => {
             const count = stats?.folders?.[f]?.count ?? 0;
             const isActive = folder === f;
@@ -302,39 +373,103 @@ export default function Dashboard() {
           })}
         </section>
 
-        <p className="mb-3 text-xs text-neutral-500">{FOLDER_HINTS[folder]}</p>
+        {folder === 'portfolio' && (
+          <section className="mb-3 flex flex-wrap items-center gap-1.5 rounded-xl border border-neutral-800 bg-neutral-900/40 p-1.5">
+            <button
+              onClick={() => setCategory('all')}
+              className={`flex items-center gap-2 rounded-lg px-2.5 py-1 text-xs transition ${
+                category === 'all'
+                  ? 'bg-emerald-500 text-neutral-950'
+                  : 'text-neutral-300 hover:bg-neutral-800/80'
+              }`}
+            >
+              All
+            </button>
+            {PORTFOLIO_CATEGORIES.map((c) => {
+              const isActive = category === c;
+              const count = stats?.portfolioCategories?.[c]?.count ?? 0;
+              return (
+                <button
+                  key={c}
+                  onClick={() => setCategory(c)}
+                  className={`flex items-center gap-2 rounded-lg px-2.5 py-1 text-xs transition ${
+                    isActive
+                      ? 'bg-emerald-500 text-neutral-950'
+                      : 'text-neutral-300 hover:bg-neutral-800/80'
+                  }`}
+                >
+                  <span>{CATEGORY_LABELS[c]}</span>
+                  <span
+                    className={`rounded px-1 py-0.5 text-[10px] tabular-nums ${
+                      isActive ? 'bg-emerald-700/40 text-emerald-50' : 'bg-neutral-800 text-neutral-400'
+                    }`}
+                  >
+                    {count}
+                  </span>
+                </button>
+              );
+            })}
+          </section>
+        )}
+
+        <p className="mb-3 text-xs text-neutral-500">
+          {folder === 'portfolio' && category !== 'all'
+            ? `Uploads will be saved to portfolio/${category}/`
+            : FOLDER_HINTS[folder]}
+        </p>
 
         <section
           onDragOver={(e) => {
+            if (uploadDisabled) return;
             e.preventDefault();
             setDragOver(true);
           }}
           onDragLeave={() => setDragOver(false)}
-          onDrop={onDrop}
+          onDrop={(e) => {
+            if (uploadDisabled) return;
+            onDrop(e);
+          }}
           className={`mb-4 rounded-xl border-2 border-dashed p-6 text-center transition ${
             dragOver
               ? 'border-emerald-400 bg-emerald-500/10'
               : 'border-neutral-800 bg-neutral-900/40'
-          }`}
+          } ${uploadDisabled && !uploading ? 'opacity-60' : ''}`}
         >
-          <div className="mb-3 text-sm text-neutral-400">
-            Drag & drop images here, or
-          </div>
-          <label className="inline-block cursor-pointer rounded-lg bg-emerald-500 px-4 py-2 text-sm font-medium text-neutral-950 transition hover:bg-emerald-400">
-            {uploading ? uploadProgress ?? 'Uploading…' : 'Choose files'}
-            <input
-              ref={fileInputRef}
-              type="file"
-              multiple
-              accept="image/*"
-              onChange={(e) => handleUpload(e.target.files)}
-              disabled={uploading}
-              className="hidden"
-            />
-          </label>
-          <div className="mt-2 text-[11px] text-neutral-500">
-            JPG · PNG · WebP · GIF · AVIF · SVG · max 25 MB each
-          </div>
+          {folder === 'portfolio' && category === 'all' ? (
+            <div className="text-sm text-amber-300">
+              Pick a category above (Weddings, Corporate, …) before uploading.
+            </div>
+          ) : uploading ? (
+            <div className="space-y-2">
+              <div className="text-sm font-medium text-neutral-200">{uploadLabel || 'Uploading…'}</div>
+              <div className="mx-auto h-2 max-w-md overflow-hidden rounded-full bg-neutral-800">
+                <div
+                  className="h-full bg-emerald-500 transition-all duration-150"
+                  style={{ width: `${uploadPct}%` }}
+                />
+              </div>
+              <div className="text-xs tabular-nums text-neutral-400">{uploadPct}%</div>
+            </div>
+          ) : (
+            <>
+              <div className="mb-3 text-sm text-neutral-400">Drag & drop images here, or</div>
+              <label className="inline-block cursor-pointer rounded-lg bg-emerald-500 px-4 py-2 text-sm font-medium text-neutral-950 transition hover:bg-emerald-400">
+                Choose files
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  multiple
+                  accept="image/*"
+                  onChange={(e) => handleUpload(e.target.files)}
+                  disabled={uploadDisabled}
+                  className="hidden"
+                />
+              </label>
+              <div className="mt-2 text-[11px] text-neutral-500">
+                JPG · PNG · WebP · GIF · AVIF · SVG · max 25 MB each
+              </div>
+            </>
+          )}
         </section>
 
         <div className="mb-3 flex flex-wrap items-center gap-2">
@@ -358,7 +493,7 @@ export default function Dashboard() {
           </div>
           <button
             onClick={() => {
-              refreshList(folder);
+              refreshList(folder, category);
               refreshStats();
             }}
             className="rounded-lg border border-neutral-800 px-3 py-1.5 text-sm text-neutral-300 hover:bg-neutral-900"
@@ -384,7 +519,10 @@ export default function Dashboard() {
           </div>
         ) : items.length === 0 ? (
           <div className="rounded-xl border border-dashed border-neutral-800 bg-neutral-900/30 px-4 py-16 text-center">
-            <div className="mb-1 text-neutral-300">No images in {FOLDER_LABELS[folder]} yet.</div>
+            <div className="mb-1 text-neutral-300">
+              No images in {FOLDER_LABELS[folder]}
+              {folder === 'portfolio' && category !== 'all' ? ` / ${CATEGORY_LABELS[category]}` : ''} yet.
+            </div>
             <div className="text-xs text-neutral-500">
               Drag files into the area above to upload.
             </div>

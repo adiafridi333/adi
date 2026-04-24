@@ -1,7 +1,13 @@
 import { NextResponse } from 'next/server';
 import { ListObjectsV2Command } from '@aws-sdk/client-s3';
 import { isAuthed } from '@/lib/admin-auth';
-import { R2_BUCKET, getR2Client, isAllowedFolder, publicUrlFor } from '@/lib/r2';
+import {
+  R2_BUCKET,
+  getR2Client,
+  isAllowedFolder,
+  isAllowedPortfolioCategory,
+  publicUrlFor,
+} from '@/lib/r2';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -11,14 +17,24 @@ export async function GET(req: Request) {
     return NextResponse.json({ ok: false, error: 'Unauthorized' }, { status: 401 });
   }
   const { searchParams } = new URL(req.url);
-  const folder = searchParams.get('folder') ?? 'gallery';
+  const folder = searchParams.get('folder') ?? 'portfolio';
   if (!isAllowedFolder(folder)) {
     return NextResponse.json({ ok: false, error: 'Invalid folder' }, { status: 400 });
+  }
+  let prefix = `${folder}/`;
+  if (folder === 'portfolio') {
+    const category = searchParams.get('category');
+    if (category) {
+      if (!isAllowedPortfolioCategory(category)) {
+        return NextResponse.json({ ok: false, error: 'Invalid category' }, { status: 400 });
+      }
+      prefix = `portfolio/${category}/`;
+    }
   }
   try {
     const client = getR2Client();
     const out = await client.send(
-      new ListObjectsV2Command({ Bucket: R2_BUCKET, Prefix: `${folder}/`, MaxKeys: 1000 }),
+      new ListObjectsV2Command({ Bucket: R2_BUCKET, Prefix: prefix, MaxKeys: 1000 }),
     );
     const items = (out.Contents ?? [])
       .filter((o) => o.Key && !o.Key.endsWith('/'))

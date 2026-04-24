@@ -1,7 +1,13 @@
 import { NextResponse } from 'next/server';
 import { PutObjectCommand } from '@aws-sdk/client-s3';
 import { isAuthed } from '@/lib/admin-auth';
-import { R2_BUCKET, getR2Client, isAllowedFolder, publicUrlFor } from '@/lib/r2';
+import {
+  R2_BUCKET,
+  getR2Client,
+  isAllowedFolder,
+  isAllowedPortfolioCategory,
+  publicUrlFor,
+} from '@/lib/r2';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -39,6 +45,20 @@ export async function POST(req: Request) {
   if (!isAllowedFolder(folder)) {
     return NextResponse.json({ ok: false, error: 'Invalid folder' }, { status: 400 });
   }
+  let keyPrefix: string = folder;
+  if (folder === 'portfolio') {
+    const category = String(form.get('category') ?? '');
+    if (!category) {
+      return NextResponse.json(
+        { ok: false, error: 'Pick a portfolio category before uploading' },
+        { status: 400 },
+      );
+    }
+    if (!isAllowedPortfolioCategory(category)) {
+      return NextResponse.json({ ok: false, error: 'Invalid category' }, { status: 400 });
+    }
+    keyPrefix = `portfolio/${category}`;
+  }
   const files = form.getAll('files').filter((f): f is File => f instanceof File);
   if (files.length === 0) {
     return NextResponse.json({ ok: false, error: 'No files provided' }, { status: 400 });
@@ -59,7 +79,7 @@ export async function POST(req: Request) {
     }
     const stamp = Date.now().toString(36);
     const rand = Math.random().toString(36).slice(2, 8);
-    const key = `${folder}/${stamp}-${rand}-${safeName(file.name)}`;
+    const key = `${keyPrefix}/${stamp}-${rand}-${safeName(file.name)}`;
     try {
       const buf = Buffer.from(await file.arrayBuffer());
       await client.send(

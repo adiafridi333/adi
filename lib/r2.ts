@@ -30,9 +30,23 @@ export function publicUrlFor(key: string): string {
   return `${R2_PUBLIC_URL}/${key.split('/').map(encodeURIComponent).join('/')}`;
 }
 
-export const ALLOWED_FOLDERS = ['gallery', 'portfolio', 'team', 'hero', 'blog'] as const;
+export const ALLOWED_FOLDERS = ['portfolio', 'team', 'hero', 'blog'] as const;
 export type Folder = (typeof ALLOWED_FOLDERS)[number];
 
 export function isAllowedFolder(value: string): value is Folder {
   return (ALLOWED_FOLDERS as readonly string[]).includes(value);
+}
+
+export const PORTFOLIO_CATEGORIES = [
+  'weddings',
+  'corporate',
+  'events',
+  'drone',
+  'fashion',
+  'videography',
+] as const;
+export type PortfolioCategory = (typeof PORTFOLIO_CATEGORIES)[number];
+
+export function isAllowedPortfolioCategory(value: string): value is PortfolioCategory {
+  return (PORTFOLIO_CATEGORIES as readonly string[]).includes(value);
 }
