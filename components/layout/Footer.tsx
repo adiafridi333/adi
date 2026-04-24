@@ -146,7 +146,7 @@ export default function Footer() {
             <a
               href="https://webspires.com.pk?utm_source=adi"
               target="_blank"
-              rel="noopener noreferrer"
+              rel="nofollow noopener noreferrer"
               className="font-bold text-text-primary hover:text-accent transition-colors"
             >
               Webspires

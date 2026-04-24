@@ -34,6 +34,14 @@ export function getAllPosts(): BlogPost[] {
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 }
 
+function toIsoPkt(date: string): string {
+  if (!date) return "";
+  // Already a full ISO datetime — leave as-is
+  if (date.includes("T")) return date;
+  // YYYY-MM-DD → midnight Pakistan Standard Time (+05:00)
+  return `${date}T00:00:00+05:00`;
+}
+
 export function getPostBySlug(slug: string): BlogPost | null {
   const filePath = path.join(BLOG_DIR, `${slug}.mdx`);
 
@@ -48,7 +56,7 @@ export function getPostBySlug(slug: string): BlogPost | null {
   return {
     slug,
     title: data.title || "",
-    date: data.date || "",
+    date: toIsoPkt(data.date || ""),
     category: data.category || "",
     description: data.description || "",
     featuredImage: data.featuredImage || "",

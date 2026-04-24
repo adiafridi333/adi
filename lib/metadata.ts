@@ -78,7 +78,7 @@ export function generateLocalBusinessJsonLd(overrides?: {
 }) {
   return {
     "@context": "https://schema.org",
-    "@type": ["LocalBusiness", "ProfessionalService", "PhotographAction"],
+    "@type": ["LocalBusiness", "ProfessionalService"],
     "@id": `${SITE_URL}/#business`,
     name: overrides?.name || "Adi Photography & Films",
     alternateName: ["Adi Photography", "Adi Photography Peshawar"],
@@ -251,14 +251,6 @@ export function generateWebSiteJsonLd() {
     url: SITE_URL,
     inLanguage: "en-PK",
     publisher: { "@id": `${SITE_URL}/#organization` },
-    potentialAction: {
-      "@type": "SearchAction",
-      target: {
-        "@type": "EntryPoint",
-        urlTemplate: `${SITE_URL}/blog?q={search_term_string}`,
-      },
-      "query-input": "required name=search_term_string",
-    },
   };
 }
 

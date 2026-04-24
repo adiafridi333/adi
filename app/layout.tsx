@@ -62,6 +62,8 @@ export const metadata: Metadata = {
   other: {
     "geo.region": "PK-KP",
     "geo.placename": "Peshawar",
+    "geo.position": "34.0151;71.5249",
+    ICBM: "34.0151, 71.5249",
   },
 };
 
