@@ -1,4 +1,5 @@
 import type { VideoEntry } from "@/lib/video";
+import MinimalVideoPlayer from "./MinimalVideoPlayer";
 
 interface VideographyGalleryProps {
   videos: VideoEntry[];
@@ -22,27 +23,7 @@ export default function VideographyGallery({ videos }: VideographyGalleryProps) 
           key={v.id}
           className="overflow-hidden rounded-card border border-border bg-bg-card"
         >
-          <div className="relative aspect-video bg-black">
-            {v.provider === "direct" ? (
-              <video
-                src={v.embedUrl}
-                controls
-                playsInline
-                preload="metadata"
-                className="h-full w-full"
-              />
-            ) : (
-              <iframe
-                src={v.embedUrl}
-                title={v.title || "Adi Photography videography"}
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                allowFullScreen
-                loading="lazy"
-                referrerPolicy="strict-origin-when-cross-origin"
-                className="absolute inset-0 h-full w-full border-0"
-              />
-            )}
-          </div>
+          <MinimalVideoPlayer video={v} />
           {v.title && (
             <div className="p-4">
               <h3 className="font-playfair text-lg text-text-primary">{v.title}</h3>
