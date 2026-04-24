@@ -1,4 +1,4 @@
-import { S3Client } from '@aws-sdk/client-s3';
+import { ListObjectsV2Command, S3Client } from '@aws-sdk/client-s3';
 
 const accountId = process.env.R2_ACCOUNT_ID;
 const accessKeyId = process.env.R2_ACCESS_KEY_ID;
@@ -53,4 +53,35 @@ export type PortfolioCategory = (typeof PORTFOLIO_CATEGORIES)[number];
 
 export function isAllowedPortfolioCategory(value: string): value is PortfolioCategory {
   return (PORTFOLIO_CATEGORIES as readonly string[]).includes(value);
+}
+
+export type R2Image = {
+  key: string;
+  url: string;
+  size: number;
+  lastModified: number;
+};
+
+export async function listImagesByPrefix(prefix: string): Promise<R2Image[]> {
+  try {
+    const client = getR2Client();
+    const out = await client.send(
+      new ListObjectsV2Command({ Bucket: R2_BUCKET, Prefix: prefix, MaxKeys: 1000 }),
+    );
+    return (out.Contents ?? [])
+      .filter((o) => o.Key && !o.Key.endsWith('/'))
+      .map((o) => ({
+        key: o.Key!,
+        url: publicUrlFor(o.Key!),
+        size: o.Size ?? 0,
+        lastModified: o.LastModified?.getTime() ?? 0,
+      }))
+      .sort((a, b) => b.lastModified - a.lastModified);
+  } catch {
+    return [];
+  }
+}
+
+export async function listPortfolioCategoryImages(category: PortfolioCategory) {
+  return listImagesByPrefix(`portfolio/${category}/`);
 }

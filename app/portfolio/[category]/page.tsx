@@ -2,7 +2,7 @@ import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Container from "@/components/layout/Container";
 import Breadcrumbs from "@/components/ui/Breadcrumbs";
-import PortfolioGrid from "@/components/portfolio/PortfolioGrid";
+import PortfolioCategoryGallery from "@/components/portfolio/PortfolioCategoryGallery";
 import JsonLd from "@/components/seo/JsonLd";
 import {
   generatePageMetadata,
@@ -13,10 +13,13 @@ import {
   getAllPortfolioCategories,
   type PortfolioCategory,
 } from "@/data/portfolio";
+import { listPortfolioCategoryImages } from "@/lib/r2";
 
 interface PortfolioCategoryPageProps {
   params: Promise<{ category: string }>;
 }
+
+export const revalidate = 60;
 
 export async function generateStaticParams() {
   return getAllPortfolioCategories().map((slug) => ({ category: slug }));
@@ -43,6 +46,10 @@ export default async function PortfolioCategoryPage({
   const category = getPortfolioCategoryData(categorySlug);
   if (!category) notFound();
 
+  const images = await listPortfolioCategoryImages(
+    categorySlug as PortfolioCategory,
+  );
+
   const breadcrumbs = [
     { name: "Home", url: "/" },
     { name: "Portfolio", url: "/portfolio" },
@@ -58,17 +65,22 @@ export default async function PortfolioCategoryPage({
           <Breadcrumbs
             items={breadcrumbs.map((b) => ({ label: b.name, href: b.url }))}
           />
-          <h1 className="text-4xl md:text-5xl font-playfair font-bold text-text-primary mt-4 mb-4">
+          <h1 className="text-4xl md:text-5xl font-playfair font-bold text-text-primary mt-4 mb-2">
             {category.h1}
           </h1>
+          <p className="text-text-secondary font-dm">
+            {images.length === 0
+              ? "Photographs coming soon."
+              : `${images.length} photograph${images.length === 1 ? "" : "s"}`}
+          </p>
         </Container>
       </section>
 
       <section className="py-12 bg-bg-primary">
         <Container>
-          <PortfolioGrid
-            category={categorySlug as PortfolioCategory}
-            showFilters={false}
+          <PortfolioCategoryGallery
+            images={images.map(({ key, url }) => ({ key, url }))}
+            categoryLabel={category.label}
           />
         </Container>
       </section>
