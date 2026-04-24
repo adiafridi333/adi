@@ -141,15 +141,15 @@ export default function Dashboard() {
     }
   }
 
-  async function handleDeleteSelected() {
-    if (selected.size === 0) return;
-    if (!confirm(`Delete ${selected.size} file(s)? This cannot be undone.`)) return;
+  async function deleteKeys(keys: string[], confirmMessage: string) {
+    if (keys.length === 0) return;
+    if (!confirm(confirmMessage)) return;
     setError(null);
     try {
       const res = await fetch('/api/admin/delete', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ keys: Array.from(selected) }),
+        body: JSON.stringify({ keys }),
       });
       const data = await res.json();
       if (!res.ok || !data.ok) throw new Error(data.error ?? 'Delete failed');
@@ -158,6 +158,18 @@ export default function Dashboard() {
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Delete failed');
     }
+  }
+
+  async function handleDeleteSelected() {
+    await deleteKeys(
+      Array.from(selected),
+      `Delete ${selected.size} file(s)? This cannot be undone.`,
+    );
+  }
+
+  async function handleDeleteOne(key: string) {
+    const name = key.split('/').slice(1).join('/');
+    await deleteKeys([key], `Delete "${name}"? This cannot be undone.`);
   }
 
   async function logout() {
@@ -443,6 +455,16 @@ export default function Dashboard() {
                     >
                       Open
                     </a>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDeleteOne(item.key);
+                      }}
+                      className="rounded-md bg-red-600/90 px-1.5 py-0.5 text-[10px] font-medium text-white hover:bg-red-500"
+                      title="Delete"
+                    >
+                      Delete
+                    </button>
                   </div>
                 </li>
               );
