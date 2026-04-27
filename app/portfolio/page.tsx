@@ -1,12 +1,22 @@
 import { Metadata } from "next";
 import Container from "@/components/layout/Container";
 import Breadcrumbs from "@/components/ui/Breadcrumbs";
-import PortfolioGrid from "@/components/portfolio/PortfolioGrid";
+import PortfolioTabs, {
+  type PortfolioTab,
+} from "@/components/portfolio/PortfolioTabs";
+import PortfolioCategoryGallery from "@/components/portfolio/PortfolioCategoryGallery";
+import VideographyGallery from "@/components/portfolio/VideographyGallery";
 import JsonLd from "@/components/seo/JsonLd";
 import {
   generatePageMetadata,
   generateBreadcrumbJsonLd,
 } from "@/lib/metadata";
+import {
+  portfolioCategories,
+  type PortfolioCategory,
+} from "@/data/portfolio";
+import { listPortfolioCategoryImages } from "@/lib/r2";
+import { readVideographyVideos } from "@/lib/videos-store";
 
 export const metadata: Metadata = generatePageMetadata({
   title: "Photography Portfolio",
@@ -15,11 +25,50 @@ export const metadata: Metadata = generatePageMetadata({
   path: "/portfolio",
 });
 
-export default function PortfolioPage() {
+export const revalidate = 60;
+
+export default async function PortfolioPage() {
   const breadcrumbs = [
     { name: "Home", url: "/" },
     { name: "Portfolio", url: "/portfolio" },
   ];
+
+  // Fetch every category's data in parallel.
+  const photoCategories = portfolioCategories.filter(
+    (c) => c.slug !== "videography",
+  );
+
+  const [photoResults, videos] = await Promise.all([
+    Promise.all(
+      photoCategories.map((c) =>
+        listPortfolioCategoryImages(c.slug as PortfolioCategory),
+      ),
+    ),
+    readVideographyVideos(),
+  ]);
+
+  const tabs: PortfolioTab[] = portfolioCategories.map((cat) => {
+    if (cat.slug === "videography") {
+      return {
+        slug: cat.slug,
+        label: cat.label,
+        panel: <VideographyGallery videos={videos} />,
+      };
+    }
+
+    const idx = photoCategories.findIndex((c) => c.slug === cat.slug);
+    const images = photoResults[idx] ?? [];
+    return {
+      slug: cat.slug,
+      label: cat.label,
+      panel: (
+        <PortfolioCategoryGallery
+          images={images.map(({ key, url }) => ({ key, url }))}
+          categoryLabel={cat.label}
+        />
+      ),
+    };
+  });
 
   return (
     <>
@@ -42,7 +91,7 @@ export default function PortfolioPage() {
 
       <section className="py-12 bg-bg-primary">
         <Container>
-          <PortfolioGrid showFilters={false} />
+          <PortfolioTabs tabs={tabs} defaultSlug="weddings" />
         </Container>
       </section>
     </>
