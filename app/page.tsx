@@ -7,7 +7,7 @@ import TeamSection from "@/components/sections/TeamSection";
 import CtaBanner from "@/components/sections/CtaBanner";
 import BlogPreview from "@/components/sections/BlogPreview";
 import JsonLd from "@/components/seo/JsonLd";
-import { generateLocalBusinessJsonLd } from "@/lib/metadata";
+import { SITE_URL, generateLocalBusinessJsonLd } from "@/lib/metadata";
 import { getAllPosts } from "@/lib/blog";
 
 export const metadata: Metadata = {
@@ -16,20 +16,20 @@ export const metadata: Metadata = {
   description:
     "Premium photography and videography services in Peshawar. Wedding, corporate, event, drone, and fashion photography by Adi Photography. Book your session today.",
   alternates: {
-    canonical: "https://www.adiphotography.pk/",
+    canonical: SITE_URL,
   },
   openGraph: {
     title:
       "Adi Photography | Professional Photography & Videography in Peshawar",
     description:
       "Premium photography and videography services in Peshawar. Wedding, corporate, event, drone, and fashion photography.",
-    url: "https://www.adiphotography.pk/",
+    url: SITE_URL,
     type: "website",
     locale: "en_PK",
     siteName: "Adi Photography",
     images: [
       {
-        url: "https://www.adiphotography.pk/images/og-default.jpg",
+        url: `${SITE_URL}/images/og-default.jpg`,
         width: 1200,
         height: 630,
         alt: "Adi Photography & Films — professional photography in Peshawar, Pakistan",
@@ -42,7 +42,7 @@ export const metadata: Metadata = {
       "Adi Photography | Professional Photography & Videography in Peshawar",
     description:
       "Premium photography and videography services in Peshawar. Wedding, corporate, event, drone, and fashion photography.",
-    images: ["https://www.adiphotography.pk/images/og-default.jpg"],
+    images: [`${SITE_URL}/images/og-default.jpg`],
   },
 };
 
