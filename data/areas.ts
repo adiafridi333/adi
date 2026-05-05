@@ -116,13 +116,6 @@ const categoryCopy: Record<AreaCategory, string> = {
     "This city or town is a strong service location for weddings, events, corporate shoots, portraits, drone videos, and destination coverage.",
 };
 
-const defaultHighlights = [
-  "Wedding photography and films",
-  "Event and corporate coverage",
-  "Drone videography",
-  "Portrait, fashion, and family sessions",
-];
-
 type UniqueSeoCopy = {
   localContext: string;
   planningNote: string;
@@ -537,6 +530,10 @@ function buildAreaFaqs(
       question: `Is drone videography available in ${input.name}?`,
       answer: `${droneText} If drone footage is not suitable for ${input.name}, we can still create strong establishing shots, venue details, and cinematic movement with ground cameras.`,
     },
+    {
+      question: `Why do clients book Adi Photography in ${input.name}?`,
+      answer: `Clients usually book us in ${input.name} because they want a team that understands local timing, family-event flow, portrait planning, and practical coverage on the day. We handle photography, cinematic video, and planning details in a way that fits ${placeLabel} instead of using a generic shoot formula.`,
+    },
   ];
 }
 
@@ -558,14 +555,14 @@ function buildArea(input: AreaInput): Area {
     slug,
     name: input.name,
     category: input.category,
-    h1: `Photographer in ${placeLabel}`,
-    metaTitle: `Photographer in ${placeLabel}`,
-    metaDescription: `Book a professional photographer in ${placeLabel} for ${bestForText}. Adi Photography covers photo, video, drone, portraits, and event films.`,
-    description: `Professional photography and videography services in ${placeLabel} for ${bestForText}.`,
+    h1: `Photography & Videography Services in ${placeLabel}`,
+    metaTitle: `Photography & Videography Services in ${placeLabel} | Adi Photography`,
+    metaDescription: `Book photography and videography services in ${placeLabel} for ${bestForText}. Adi Photography covers weddings, events, portraits, reels, and drone work where suitable.`,
+    description: `Professional photography and videography services in ${placeLabel} for ${bestForText}, with local planning that matches the venue, timeline, and style of your booking.`,
     content: `Adi Photography provides complete photo and video coverage in ${placeLabel}${regionText}. ${seoCopy.localContext}${noteText}${aliasText}`,
     seoSections: [
       {
-        heading: `Local photography coverage in ${placeLabel}`,
+        heading: `Photography coverage in ${placeLabel}`,
         body: `${categoryCopy[input.category]} ${seoCopy.localContext}`,
       },
       {
@@ -573,12 +570,17 @@ function buildArea(input: AreaInput): Area {
         body: seoCopy.planningNote,
       },
       {
-        heading: `Popular photography services in ${input.name}`,
+        heading: `Popular photography and videography services in ${input.name}`,
         body: `Clients usually book Adi Photography in ${placeLabel} for ${seoCopy.bestFor[0]}, ${seoCopy.bestFor[1]}, and ${seoCopy.bestFor[2]}. We can cover still photography, cinematic video, drone footage where suitable, family portraits, and short social media edits depending on the event plan.`,
       },
     ],
     faqs: buildAreaFaqs(input, placeLabel, seoCopy),
-    highlights: defaultHighlights,
+    highlights: [
+      `${seoCopy.bestFor[0]} coverage in ${placeLabel}`,
+      `${seoCopy.bestFor[1]} with photo, video, and planning support`,
+      `${seoCopy.bestFor[2]} tailored to the location and event flow`,
+      `Drone footage where suitable, permitted, and safe to operate`,
+    ],
     nearbyAreas: input.nearbyAreas,
     aliases: input.aliases,
   };

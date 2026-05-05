@@ -6,9 +6,42 @@ import TestimonialsSection from "@/components/sections/TestimonialsSection";
 import TeamSection from "@/components/sections/TeamSection";
 import CtaBanner from "@/components/sections/CtaBanner";
 import BlogPreview from "@/components/sections/BlogPreview";
+import FaqSection from "@/components/sections/FaqSection";
 import JsonLd from "@/components/seo/JsonLd";
-import { SITE_URL, generateLocalBusinessJsonLd } from "@/lib/metadata";
+import {
+  SITE_URL,
+  generateFaqJsonLd,
+  generateLocalBusinessJsonLd,
+} from "@/lib/metadata";
 import { getAllPosts } from "@/lib/blog";
+
+const homepageFaqs = [
+  {
+    question: "What photography services do you offer in Peshawar?",
+    answer:
+      "Adi Photography offers wedding photography, corporate photography, event coverage, fashion shoots, portrait sessions, drone videography, and full video production in Peshawar and nearby cities.",
+  },
+  {
+    question: "Do you provide both photography and videography packages?",
+    answer:
+      "Yes. Clients can book photography only, videography only, or combined packages for weddings, corporate events, private functions, and commercial projects.",
+  },
+  {
+    question: "Can you travel outside Peshawar for destination shoots?",
+    answer:
+      "Yes. We travel for destination weddings, corporate shoots, and outdoor sessions in Islamabad, Swat, Mardan, Nowshera, Lahore, Karachi, and other cities when scheduled in advance.",
+  },
+  {
+    question: "How far in advance should I book Adi Photography?",
+    answer:
+      "For weddings and major event dates, booking a few months in advance is safest. For portraits, business shoots, and smaller sessions, availability depends on the date and location.",
+  },
+  {
+    question: "How do I get a quote for photography or videography in Peshawar?",
+    answer:
+      "Send us your date, venue, city, and the type of coverage you need. We will recommend the right package and share pricing based on hours, team size, and deliverables.",
+  },
+];
 
 export const metadata: Metadata = {
   title:
@@ -52,6 +85,7 @@ export default function Home() {
   return (
     <>
       <JsonLd data={generateLocalBusinessJsonLd()} />
+      <JsonLd data={generateFaqJsonLd(homepageFaqs)} />
 
       <HeroSection
         title="Professional Photography & Videography in Peshawar"
@@ -70,6 +104,11 @@ export default function Home() {
       <TeamSection />
 
       <CtaBanner />
+
+      <FaqSection
+        faqs={homepageFaqs}
+        title="Frequently Asked Questions About Adi Photography"
+      />
 
       <BlogPreview posts={posts} />
     </>

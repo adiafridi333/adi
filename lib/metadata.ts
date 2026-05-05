@@ -250,8 +250,18 @@ export function generateWebSiteJsonLd() {
     "@type": "WebSite",
     "@id": `${SITE_URL}/#website`,
     name: "Adi Photography & Films",
+    alternateName: "Adi Photography Peshawar",
     url: SITE_URL,
     inLanguage: "en-PK",
+    description:
+      "Professional photography and videography studio website for wedding, corporate, event, fashion, and drone coverage in Peshawar and nearby cities.",
+    about: [
+      "Wedding photography in Peshawar",
+      "Corporate photography in Peshawar",
+      "Event photography in Peshawar",
+      "Videography in Peshawar",
+      "Drone videography in Peshawar",
+    ],
     publisher: { "@id": `${SITE_URL}/#organization` },
   };
 }
@@ -333,7 +343,7 @@ export function generateFaqJsonLd(
   return {
     "@context": "https://schema.org",
     "@type": "FAQPage",
-    mainEntity: faqs.map((faq) => ({
+    mainEntity: faqs.slice(0, 5).map((faq) => ({
       "@type": "Question",
       name: faq.question,
       acceptedAnswer: {

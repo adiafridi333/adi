@@ -1,5 +1,5 @@
 import { GetObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3';
-import { R2_BUCKET, getR2Client } from './r2';
+import { R2_BUCKET, getR2Client, isR2Configured } from './r2';
 import type { VideoEntry } from './video';
 
 const VIDEOGRAPHY_KEY = '_meta/videography-videos.json';
@@ -18,6 +18,8 @@ async function streamToString(body: unknown): Promise<string> {
 }
 
 export async function readVideographyVideos(): Promise<VideoEntry[]> {
+  if (!isR2Configured()) return [];
+
   try {
     const client = getR2Client();
     const out = await client.send(

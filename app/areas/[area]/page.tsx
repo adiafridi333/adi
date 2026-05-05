@@ -76,6 +76,18 @@ export default async function AreaPage({ params }: AreaPageProps) {
           <p className="text-text-secondary font-dm text-lg max-w-2xl">
             {area.description}
           </p>
+          <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-3 max-w-4xl">
+            {area.highlights.slice(0, 4).map((highlight) => (
+              <div
+                key={highlight}
+                className="rounded-card border border-border bg-bg-card px-4 py-4"
+              >
+                <p className="text-sm md:text-base font-dm text-text-secondary leading-relaxed">
+                  {highlight}
+                </p>
+              </div>
+            ))}
+          </div>
         </Container>
       </section>
 
@@ -105,7 +117,7 @@ export default async function AreaPage({ params }: AreaPageProps) {
             <ScrollReveal delay={0.12}>
               <div className="bg-bg-card border border-border rounded-card p-6">
                 <h2 className="text-xl font-playfair font-semibold text-text-primary mb-5">
-                  Coverage Includes
+                  Why Book Coverage Here
                 </h2>
                 <ul className="space-y-4">
                   {area.highlights.map((highlight) => (

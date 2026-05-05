@@ -3,6 +3,7 @@ export interface Service {
   title: string;
   h1: string;
   shortDescription: string;
+  heroBenefits: string[];
   description: string;
   icon: string;
   heroImage: string;
@@ -25,6 +26,11 @@ export const services: Service[] = [
     h1: "Wedding Photography Services in Peshawar",
     shortDescription:
       "Capturing your most cherished moments with cinematic elegance and timeless artistry.",
+    heroBenefits: [
+      "Nikah, mehndi, baraat, and valima coverage planned around your timeline",
+      "Candid portraits, family formals, and cinematic couple photos in one package",
+      "Fast previews, polished editing, and premium album design from one team",
+    ],
     description:
       "At Adi Photography, we specialize in capturing the beauty, emotion, and grandeur of weddings across Peshawar and Pakistan. From intimate nikah ceremonies to lavish valima receptions, our team delivers stunning imagery that tells your unique love story. Every frame is composed with cinematic precision, ensuring your wedding album becomes a treasured heirloom.",
     icon: "wedding",
@@ -33,6 +39,14 @@ export const services: Service[] = [
       "Wedding Photography in Peshawar | Adi Photography Peshawar",
     metaDescription:
       "Premium wedding photography services in Peshawar. Cinematic coverage of nikah, mehndi, baraat & valima ceremonies. Book Adi Photography for your special day.",
+    keywords: [
+      "wedding photography Peshawar",
+      "wedding photographer Peshawar",
+      "nikah photographer Peshawar",
+      "mehndi photography Peshawar",
+      "baraat and valima photographer",
+      "Adi Photography wedding coverage",
+    ],
     expandedContent: [
       {
         heading: "Why Choose Adi Photography for Wedding Photography in Peshawar?",
@@ -108,6 +122,11 @@ export const services: Service[] = [
     h1: "Corporate Photography Services in Peshawar",
     shortDescription:
       "Professional imagery that elevates your brand and captures your corporate story.",
+    heroBenefits: [
+      "Executive headshots and team portraits that match your brand standards",
+      "Office, product, and event coverage with minimal disruption to your workday",
+      "Web, LinkedIn, print, and campaign-ready image delivery formats",
+    ],
     description:
       "Adi Photography delivers polished corporate photography services in Peshawar for businesses of all sizes. From executive headshots and team photos to product launches and annual reports, we create professional imagery that strengthens your brand identity and communicates your company's values with visual impact.",
     icon: "corporate",
@@ -116,6 +135,14 @@ export const services: Service[] = [
       "Corporate Photography in Peshawar | Adi Photography Peshawar",
     metaDescription:
       "Professional corporate photography in Peshawar. Executive headshots, team photos, product shoots & event coverage. Elevate your brand with Adi Photography.",
+    keywords: [
+      "corporate photography Peshawar",
+      "executive headshots Peshawar",
+      "business photographer Peshawar",
+      "team photos Peshawar",
+      "corporate event photography Peshawar",
+      "brand photography Peshawar",
+    ],
     expandedContent: [
       {
         heading: "Why Choose Adi Photography for Corporate Photography in Peshawar?",
@@ -191,6 +218,11 @@ export const services: Service[] = [
     h1: "Professional Videography Services in Peshawar",
     shortDescription:
       "Cinematic video production that brings your vision to life with stunning motion imagery.",
+    heroBenefits: [
+      "Wedding films, commercial videos, and event highlights produced in 4K",
+      "In-house planning, filming, editing, color grading, and sound finishing",
+      "Short reels and full-length edits tailored to web, social, and client delivery",
+    ],
     description:
       "From wedding films to commercial productions, Adi Photography's videography team in Peshawar creates compelling visual stories. Using cinema-grade equipment and professional editing, we deliver videos that captivate audiences and communicate your message with emotional impact and visual sophistication.",
     icon: "videography",
@@ -291,6 +323,11 @@ export const services: Service[] = [
     h1: "Drone Videography & Aerial Photography in Peshawar",
     shortDescription:
       "Breathtaking aerial perspectives that add a cinematic dimension to your project.",
+    heroBenefits: [
+      "Licensed aerial coverage for weddings, venues, real estate, and commercial shoots",
+      "High-resolution drone footage integrated with your ground-level photo or video package",
+      "Flight planning based on permissions, safety, weather, and location conditions",
+    ],
     description:
       "Adi Photography offers professional drone videography and aerial photography services in Peshawar. Our licensed drone pilots capture stunning bird's-eye views of venues, events, properties, and landscapes. From wedding aerials to real estate tours, our drone footage adds a premium cinematic dimension that ground-level cameras simply cannot achieve.",
     icon: "drone",
@@ -299,6 +336,14 @@ export const services: Service[] = [
       "Drone Videography in Peshawar | Aerial Photography | Adi Photography",
     metaDescription:
       "Professional drone videography & aerial photography in Peshawar. Stunning 4K aerial shots for weddings, real estate, events & commercial projects. Licensed pilots.",
+    keywords: [
+      "drone videography Peshawar",
+      "aerial photography Peshawar",
+      "drone photographer Peshawar",
+      "drone wedding coverage Peshawar",
+      "real estate drone video Peshawar",
+      "licensed drone pilot Pakistan",
+    ],
     expandedContent: [
       {
         heading: "Why Choose Adi Photography for Drone Videography in Peshawar?",
@@ -374,6 +419,11 @@ export const services: Service[] = [
     h1: "Event Photography Services in Peshawar",
     shortDescription:
       "Complete event coverage that captures every moment, emotion, and detail.",
+    heroBenefits: [
+      "Corporate events, private functions, seminars, and celebrations covered end to end",
+      "Candid storytelling, group portraits, and stage moments captured in one workflow",
+      "Quick social media previews followed by a fully edited online gallery",
+    ],
     description:
       "Whether it's a corporate gala, private celebration, or community event in Peshawar, Adi Photography delivers comprehensive event coverage. Our experienced team works discreetly to capture candid moments, group photographs, and event highlights that tell the complete story of your occasion.",
     icon: "event",
@@ -382,6 +432,14 @@ export const services: Service[] = [
       "Event Photography in Peshawar | Adi Photography Peshawar",
     metaDescription:
       "Professional event photography in Peshawar. Complete coverage for corporate events, celebrations, seminars & private functions. Book Adi Photography today.",
+    keywords: [
+      "event photography Peshawar",
+      "event photographer Peshawar",
+      "corporate event coverage Peshawar",
+      "seminar photography Peshawar",
+      "private event photographer Peshawar",
+      "conference photography Peshawar",
+    ],
     expandedContent: [
       {
         heading: "Why Choose Adi Photography for Event Photography in Peshawar?",
@@ -457,6 +515,11 @@ export const services: Service[] = [
     h1: "Fashion Photography Services in Peshawar",
     shortDescription:
       "Editorial and commercial fashion photography that makes your brand stand out.",
+    heroBenefits: [
+      "Lookbooks, campaigns, and e-commerce shoots shaped around your collection goals",
+      "Studio and on-location production with styling direction and retouching support",
+      "Deliverables prepared for social media, online stores, print, and brand launches",
+    ],
     description:
       "Adi Photography brings high-fashion editorial quality to Peshawar. Whether you're a clothing brand, boutique, or designer, our fashion photography services deliver striking visuals for lookbooks, campaigns, e-commerce, and social media. We combine creative direction, professional styling coordination, and expert post-production to create images that sell.",
     icon: "fashion",
@@ -465,6 +528,14 @@ export const services: Service[] = [
       "Fashion Photography in Peshawar | Adi Photography Peshawar",
     metaDescription:
       "High-end fashion photography in Peshawar. Lookbooks, campaigns, e-commerce & editorial shoots. Professional fashion photographer for brands and designers.",
+    keywords: [
+      "fashion photography Peshawar",
+      "fashion photographer Peshawar",
+      "lookbook photography Peshawar",
+      "ecommerce fashion photography Pakistan",
+      "boutique photography Peshawar",
+      "editorial fashion shoot Peshawar",
+    ],
     expandedContent: [
       {
         heading: "Why Choose Adi Photography for Fashion Photography in Peshawar?",

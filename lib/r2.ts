@@ -9,17 +9,39 @@ export const R2_PUBLIC_URL = (process.env.R2_PUBLIC_URL ?? '').replace(/\/$/, ''
 
 let client: S3Client | null = null;
 
+export function isR2Configured(): boolean {
+  return Boolean(accountId && accessKeyId && secretAccessKey);
+}
+
 export function getR2Client(): S3Client {
-  if (!accountId || !accessKeyId || !secretAccessKey) {
+  if (!isR2Configured()) {
     throw new Error(
       'R2 is not configured. Set R2_ACCOUNT_ID, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY in .env.local',
     );
   }
+
+  const configuredAccountId = accountId;
+  const configuredAccessKeyId = accessKeyId;
+  const configuredSecretAccessKey = secretAccessKey;
+
+  if (
+    !configuredAccountId ||
+    !configuredAccessKeyId ||
+    !configuredSecretAccessKey
+  ) {
+    throw new Error(
+      'R2 is not configured. Set R2_ACCOUNT_ID, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY in .env.local',
+    );
+  }
+
   if (!client) {
     client = new S3Client({
       region: 'auto',
-      endpoint: `https://${accountId}.r2.cloudflarestorage.com`,
-      credentials: { accessKeyId, secretAccessKey },
+      endpoint: `https://${configuredAccountId}.r2.cloudflarestorage.com`,
+      credentials: {
+        accessKeyId: configuredAccessKeyId,
+        secretAccessKey: configuredSecretAccessKey,
+      },
       // R2 doesn't validate AWS SDK v3's default CRC32 checksum, and
       // browsers can't compute it for direct presigned PUTs.
       requestChecksumCalculation: 'WHEN_REQUIRED',

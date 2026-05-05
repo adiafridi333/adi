@@ -2,6 +2,7 @@ import { Metadata } from "next";
 import Link from "next/link";
 import Container from "@/components/layout/Container";
 import CtaBanner from "@/components/sections/CtaBanner";
+import FaqSection from "@/components/sections/FaqSection";
 import Breadcrumbs from "@/components/ui/Breadcrumbs";
 import ScrollReveal from "@/components/ui/ScrollReveal";
 import ServiceIcon from "@/components/ui/ServiceIcon";
@@ -9,6 +10,7 @@ import JsonLd from "@/components/seo/JsonLd";
 import {
   generatePageMetadata,
   generateBreadcrumbJsonLd,
+  generateFaqJsonLd,
 } from "@/lib/metadata";
 import { areaCategories, getAreasByCategory } from "@/data/areas";
 import { services } from "@/data/services";
@@ -20,6 +22,34 @@ export const metadata: Metadata = generatePageMetadata({
   path: "/areas",
 });
 
+const areaPageFaqs = [
+  {
+    question: "Which Peshawar areas do you cover for photography and videography?",
+    answer:
+      "We cover major Peshawar areas including Hayatabad, University Town, Saddar, Cantt, Gulbahar, Tehkal, Warsak Road, and other nearby neighborhoods, along with destination cities such as Islamabad, Swat, Mardan, and Nowshera.",
+  },
+  {
+    question: "Do you travel to nearby cities for weddings and events?",
+    answer:
+      "Yes. We regularly travel from Peshawar for weddings, portraits, corporate shoots, and event films in nearby cities once the date, location, and coverage plan are confirmed.",
+  },
+  {
+    question: "How do I know which area page is right for my location?",
+    answer:
+      "Use the area page that matches your neighborhood, venue zone, or nearby city. If your exact location is not listed, contact us and we will guide you to the nearest relevant coverage page and quote accordingly.",
+  },
+  {
+    question: "Can I book both photography and videography in my area?",
+    answer:
+      "Yes. Most area bookings can include still photography, cinematic videography, reels, drone footage where suitable, and family or team portraits depending on the event and location.",
+  },
+  {
+    question: "How do you plan shoots in different Peshawar neighborhoods?",
+    answer:
+      "We plan each shoot around road access, parking, venue timing, indoor and outdoor light, family schedule, and whether the location is better suited to portraits, events, business coverage, or full-day wedding work.",
+  },
+];
+
 export default function AreasPage() {
   const breadcrumbs = [
     { name: "Home", url: "/" },
@@ -29,6 +59,7 @@ export default function AreasPage() {
   return (
     <>
       <JsonLd data={generateBreadcrumbJsonLd(breadcrumbs)} />
+      <JsonLd data={generateFaqJsonLd(areaPageFaqs)} />
 
       <section className="pt-32 pb-12 bg-bg-primary">
         <Container>
@@ -140,6 +171,11 @@ export default function AreasPage() {
           </div>
         </Container>
       </section>
+
+      <FaqSection
+        faqs={areaPageFaqs}
+        title="FAQs About Photography Coverage by Area"
+      />
 
       <CtaBanner
         title="Need Photography in Your Area?"

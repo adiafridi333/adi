@@ -91,6 +91,18 @@ export default async function ServicePage({ params }: ServicePageProps) {
           <p className="text-text-secondary font-dm text-lg max-w-xl mx-auto">
             {service.shortDescription}
           </p>
+          <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-3 max-w-5xl mx-auto text-left">
+            {service.heroBenefits.map((benefit) => (
+              <div
+                key={benefit}
+                className="rounded-card border border-white/15 bg-black/25 backdrop-blur-sm px-4 py-4"
+              >
+                <p className="text-sm md:text-base font-dm text-text-primary leading-relaxed">
+                  {benefit}
+                </p>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
