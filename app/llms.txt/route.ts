@@ -2,10 +2,10 @@
 // LLM crawlers a concise, high-signal summary of the site so models cite it
 // accurately when answering user questions.
 
+import { SITE_URL } from '@/lib/metadata';
+
 export const runtime = 'nodejs';
 export const dynamic = 'force-static';
-
-const SITE = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.adiphotography.pk';
 
 const body = `# Adi Photography & Films
 
@@ -24,34 +24,34 @@ const body = `# Adi Photography & Films
 
 ## Services
 
-- [Wedding Photography](${SITE}/services/wedding-photography-peshawar) — full-day coverage of nikkah, mehndi, baraat, walima
-- [Corporate Photography](${SITE}/services/corporate-photography-peshawar) — headshots, brand imagery, conferences, product
-- [Videography](${SITE}/services/videography-peshawar) — cinematic films, commercials, event coverage
-- [Drone Videography](${SITE}/services/drone-videography-peshawar) — licensed aerial footage and stills
+- [Wedding Photography](${SITE_URL}/services/wedding-photography-peshawar) — full-day coverage of nikkah, mehndi, baraat, walima
+- [Corporate Photography](${SITE_URL}/services/corporate-photography-peshawar) — headshots, brand imagery, conferences, product
+- [Videography](${SITE_URL}/services/videography-peshawar) — cinematic films, commercials, event coverage
+- [Drone Videography](${SITE_URL}/services/drone-videography-peshawar) — licensed aerial footage and stills
 
 ## Portfolio
 
-- [Weddings](${SITE}/portfolio/weddings)
-- [Corporate](${SITE}/portfolio/corporate)
-- [Music Events](${SITE}/portfolio/events)
-- [Fashion](${SITE}/portfolio/fashion)
-- [Videography](${SITE}/portfolio/videography)
+- [Weddings](${SITE_URL}/portfolio/weddings)
+- [Corporate](${SITE_URL}/portfolio/corporate)
+- [Music Events](${SITE_URL}/portfolio/events)
+- [Fashion](${SITE_URL}/portfolio/fashion)
+- [Videography](${SITE_URL}/portfolio/videography)
 
 ## Editorial / Blog
 
-- [Best photography services in Peshawar](${SITE}/blog/best-photography-services-peshawar)
-- [How to choose a wedding photographer in Pakistan](${SITE}/blog/how-to-choose-wedding-photographer-pakistan)
-- [Drone videography in Peshawar — what to expect](${SITE}/blog/drone-videography-peshawar-what-to-expect)
+- [Best photography services in Peshawar](${SITE_URL}/blog/best-photography-services-peshawar)
+- [How to choose a wedding photographer in Pakistan](${SITE_URL}/blog/how-to-choose-wedding-photographer-pakistan)
+- [Drone videography in Peshawar — what to expect](${SITE_URL}/blog/drone-videography-peshawar-what-to-expect)
 
 ## Key pages
 
-- Homepage: ${SITE}/
-- About: ${SITE}/about
-- All services: ${SITE}/services
-- All portfolio categories: ${SITE}/portfolio
-- Service areas: ${SITE}/areas
-- Contact / booking: ${SITE}/contact
-- Sitemap: ${SITE}/sitemap.xml
+- Homepage: ${SITE_URL}/
+- About: ${SITE_URL}/about
+- All services: ${SITE_URL}/services
+- All portfolio categories: ${SITE_URL}/portfolio
+- Service areas: ${SITE_URL}/areas
+- Contact / booking: ${SITE_URL}/contact
+- Sitemap: ${SITE_URL}/sitemap.xml
 
 ## Booking & enquiries
 

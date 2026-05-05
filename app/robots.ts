@@ -1,24 +1,13 @@
 import type { MetadataRoute } from 'next';
-
-const SITE = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.adiphotography.pk';
+import { SITE_HOST, SITE_URL } from '@/lib/metadata';
 
 const HUMAN_DISALLOW = [
   '/admin',
   '/admin/',
   '/api/',
-  '/*.phtml$',
-  '/author/',
-  '/comments/feed/',
   '/wp-admin/',
   '/wp-content/',
   '/wp-includes/',
-  '/wp-json/',
-  '/wp-login.php',
-  '/feed/',
-  '/rss/',
-  '/xmlrpc.php',
-  '/*?feed=',
-  '/*?replytocom=',
 ];
 
 // Bots that train + cite content for LLM answer engines. Allow them so the
@@ -61,7 +50,7 @@ export default function robots(): MetadataRoute.Robots {
         disallow: ['/admin', '/admin/', '/api/'],
       },
     ],
-    sitemap: `${SITE}/sitemap.xml`,
-    host: SITE,
+    sitemap: `${SITE_URL}/sitemap.xml`,
+    host: SITE_HOST,
   };
 }

@@ -7,7 +7,7 @@ import TeamSection from "@/components/sections/TeamSection";
 import CtaBanner from "@/components/sections/CtaBanner";
 import Breadcrumbs from "@/components/ui/Breadcrumbs";
 import JsonLd from "@/components/seo/JsonLd";
-import { generatePageMetadata, generateBreadcrumbJsonLd } from "@/lib/metadata";
+import { SITE_URL, generatePageMetadata, generateBreadcrumbJsonLd } from "@/lib/metadata";
 import { team } from "@/data/team";
 import ServiceIcon from "@/components/ui/ServiceIcon";
 
@@ -28,8 +28,8 @@ export default function AboutPage() {
     "@context": "https://schema.org",
     "@type": "Organization",
     name: "Adi Photography",
-    url: "https://adiphotography.pk",
-    logo: "https://adiphotography.pk/images/logo.png",
+    url: SITE_URL,
+    logo: `${SITE_URL}/images/logo.png`,
     description:
       "Professional photography and videography studio based in Peshawar, Pakistan.",
     foundingDate: "2015",

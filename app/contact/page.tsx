@@ -2,7 +2,7 @@ import { Metadata } from "next";
 import Container from "@/components/layout/Container";
 import Breadcrumbs from "@/components/ui/Breadcrumbs";
 import JsonLd from "@/components/seo/JsonLd";
-import { generatePageMetadata, generateBreadcrumbJsonLd } from "@/lib/metadata";
+import { SITE_URL, generatePageMetadata, generateBreadcrumbJsonLd } from "@/lib/metadata";
 import { contactInfo } from "@/data/navigation";
 
 export const metadata: Metadata = generatePageMetadata({
@@ -24,7 +24,7 @@ export default function ContactPage() {
     name: "Contact Adi Photography",
     description:
       "Book a photography or videography session with Adi Photography in Peshawar, Pakistan.",
-    url: "https://adiphotography.pk/contact",
+    url: `${SITE_URL}/contact`,
     mainEntity: {
       "@type": "LocalBusiness",
       name: "Adi Photography",

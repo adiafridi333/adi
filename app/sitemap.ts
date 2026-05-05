@@ -4,14 +4,13 @@ import { getAllLocationSlugs } from '@/data/locations';
 import { getAllServiceSlugs } from '@/data/services';
 import { portfolioCategories } from '@/data/portfolio';
 import { getAllPosts, getAllCategories } from '@/lib/blog';
-
-const SITE = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.adiphotography.pk';
+import { SITE_URL } from '@/lib/metadata';
 
 type Entry = MetadataRoute.Sitemap[number];
 
 function url(path: string, opts: Partial<Entry> = {}): Entry {
   return {
-    url: `${SITE}${path}`,
+    url: `${SITE_URL}${path}`,
     lastModified: opts.lastModified ?? new Date(),
     changeFrequency: opts.changeFrequency ?? 'weekly',
     priority: opts.priority ?? 0.7,

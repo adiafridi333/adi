@@ -1,7 +1,9 @@
 import { Metadata } from "next";
 
-const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL || "https://www.adiphotography.pk";
+export const SITE_URL = (
+  process.env.NEXT_PUBLIC_SITE_URL || "https://www.adiphotography.pk"
+).replace(/\/$/, "");
+export const SITE_HOST = new URL(SITE_URL).host;
 const SITE_NAME = "Adi Photography Peshawar";
 const DEFAULT_OG_IMAGE = "/images/og-default.jpg";
 
